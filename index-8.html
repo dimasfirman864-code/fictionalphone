@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiction Phone</title>
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --surface:#141414;
+    --surface-2:#1e1e1e;
+    --border:#2c2c2c;
+    --text:#ffffff;
+    --muted:#9a9a9a;
+    --accent:#e11d2e;
+    --accent-dark:#a3121f;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;
+    padding-bottom:76px;
+  }
+  a{color:inherit;}
+
+  /* Header */
+  header.topbar{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,10,10,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+    padding:14px 18px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-weight:700;font-size:18px;letter-spacing:0.2px;
+  }
+  .brand .logo{
+    width:32px;height:32px;border-radius:9px;
+    background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+  }
+  .btn{
+    border:none;cursor:pointer;
+    border-radius:12px;
+    padding:11px 18px;
+    font-size:14px;font-weight:600;
+    transition:transform .15s ease, opacity .15s ease, background .2s ease;
+  }
+  .btn:active{transform:scale(0.96);}
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+  }
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-ghost{
+    background:var(--surface-2);
+    color:var(--text);
+    border:1px solid var(--border);
+  }
+  .btn-block{width:100%;}
+
+  main{
+    max-width:960px;
+    margin:0 auto;
+    padding:20px 16px 40px;
+  }
+
+  /* Views */
+  .view{display:none;animation:fadeIn .25s ease;}
+  .view.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .section-title{
+    font-size:15px;color:var(--text);
+    margin:26px 2px 14px;
+    font-weight:700;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-title:first-child{margin-top:6px;}
+  .section-title .bar{width:4px;height:16px;background:var(--accent);border-radius:2px;display:inline-block;}
+
+  /* Category tabs */
+  .cat-tabs{
+    display:flex;gap:8px;overflow-x:auto;
+    padding-bottom:4px;margin-bottom:16px;
+    -ms-overflow-style:none;scrollbar-width:none;
+  }
+  .cat-tabs::-webkit-scrollbar{display:none;}
+  .cat-tab{
+    flex-shrink:0;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:9px 16px;
+    border-radius:999px;
+    font-size:13px;font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .cat-tab.active{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+
+  /* News feed */
+  .news-list{display:flex;flex-direction:column;gap:14px;}
+  .news-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .news-photo{width:100%;max-height:260px;overflow:hidden;}
+  .news-photo img{width:100%;display:block;object-fit:cover;max-height:260px;}
+  .news-body{padding:16px;}
+  .news-title{font-size:16px;font-weight:700;margin-bottom:6px;}
+  .news-content{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px;}
+  .news-meta{
+    display:flex;align-items:center;gap:8px;
+    padding-top:10px;border-top:1px solid var(--border);
+  }
+  .news-author{font-size:12px;color:var(--muted);font-weight:600;}
+  .news-time{font-size:11px;color:var(--muted);margin-left:auto;}
+
+  /* Home grid */
+  .phone-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:16px;
+  }
+  .phone-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:transform .18s ease, border-color .18s ease;
+  }
+  .phone-card:hover{transform:translateY(-3px);border-color:#4a4a4a;}
+  .phone-photo-wrap{
+    width:100%;aspect-ratio:1/1;
+    background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+  .phone-photo-wrap img{width:100%;height:100%;object-fit:cover;}
+  .cat-badge{
+    position:absolute;top:10px;left:10px;
+    background:var(--accent);
+    color:#fff;font-size:10px;font-weight:700;
+    padding:4px 10px;border-radius:999px;
+    letter-spacing:0.3px;
+  }
+  .phone-body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .phone-brand{font-size:12px;color:var(--accent);font-weight:700;}
+  .phone-name{font-size:16px;font-weight:700;line-height:1.25;}
+  .phone-price{font-size:14px;color:var(--muted);}
+  .phone-desc{
+    font-size:13px;color:var(--muted);
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;
+    margin:2px 0 6px;
+  }
+  .phone-creator{
+    display:flex;align-items:center;gap:8px;
+    margin-top:auto;padding-top:10px;
+    border-top:1px solid var(--border);
+  }
+  .avatar{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--surface-2);object-fit:cover;
+    flex-shrink:0;
+  }
+  .avatar-fallback{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--muted);flex-shrink:0;
+  }
+  .creator-name{font-size:12px;color:var(--muted);}
+
+  .empty-state{
+    text-align:center;padding:40px 20px;color:var(--muted);
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  }
+  .empty-state .emoji{font-size:32px;display:block;margin-bottom:10px;}
+
+  /* Form */
+  .form-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px;
+  }
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;font-size:13px;color:var(--muted);
+    margin-bottom:7px;font-weight:600;
+  }
+  .field input[type=text],
+  .field input[type=number],
+  .field textarea,
+  .field select{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:12px 13px;
+    border-radius:11px;
+    font-size:14px;
+    font-family:inherit;
+    outline:none;
+    transition:border-color .15s ease;
+    appearance:none;
+    -webkit-appearance:none;
+  }
+  .field select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239a9a9a' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 13px center;
+    padding-right:34px;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    border-color:var(--accent);
+  }
+  .field textarea{resize:vertical;min-height:80px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:520px){.grid-2{grid-template-columns:1fr;}}
+
+  .upload-box{
+    display:flex;align-items:center;gap:14px;
+    background:var(--surface-2);
+    border:1px dashed var(--border);
+    border-radius:12px;
+    padding:12px;
+    cursor:pointer;
+  }
+  .upload-preview{
+    width:56px;height:56px;border-radius:10px;
+    background:var(--bg);object-fit:cover;flex-shrink:0;
+  }
+  .upload-preview.round{border-radius:50%;}
+  .upload-preview.wide{width:80px;height:56px;}
+  .upload-text{font-size:13px;color:var(--muted);}
+  .upload-box input[type=file]{display:none;}
+
+  .form-actions{
+    display:flex;gap:10px;margin-top:22px;
+  }
+  .form-actions .btn{flex:1;}
+
+  /* Preview */
+  .preview-phone{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .preview-photo{
+    width:100%;aspect-ratio:1/1;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .preview-photo img{width:100%;height:100%;object-fit:cover;}
+  .preview-body{padding:18px;}
+  .spec-table{
+    width:100%;border-collapse:collapse;margin-top:12px;
+  }
+  .spec-table tr{border-top:1px solid var(--border);}
+  .spec-table td{padding:9px 4px;font-size:13px;}
+  .spec-table td:first-child{color:var(--muted);width:40%;}
+
+  /* Bottom nav */
+  nav.bottomnav{
+    position:fixed;bottom:0;left:0;right:0;
+    background:rgba(16,16,16,0.96);
+    backdrop-filter:blur(10px);
+    border-top:1px solid var(--border);
+    display:flex;
+    z-index:20;
+  }
+  nav.bottomnav button{
+    flex:1;background:none;border:none;color:var(--muted);
+    padding:12px 0 10px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:11px;font-weight:600;cursor:pointer;
+  }
+  nav.bottomnav button .icon{font-size:20px;}
+  nav.bottomnav button.active{color:var(--accent);}
+
+  .toast{
+    position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--surface-2);border:1px solid var(--border);
+    color:var(--text);padding:12px 20px;border-radius:12px;
+    font-size:13px;font-weight:600;
+    opacity:0;pointer-events:none;
+    transition:all .25s ease;
+    z-index:50;
+    box-shadow:0 8px 24px rgba(0,0,0,0.5);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .page-header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .page-header h1{font-size:20px;margin:0;}
+  .page-header .back-btn{
+    background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+    width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;margin-right:10px;
+  }
+  .page-header .title-row{display:flex;align-items:center;}
+
+  /* Header actions */
+  .header-actions{display:flex;align-items:center;gap:8px;}
+  .btn-icon{
+    width:40px;height:40px;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:11px;
+  }
+
+  /* Main tabs (HP / Berita) */
+  .main-tabs{
+    display:flex;gap:8px;margin-bottom:18px;
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:5px;
+  }
+  .main-tab{
+    flex:1;background:none;border:none;color:var(--muted);
+    padding:11px 0;border-radius:10px;
+    font-size:13.5px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    transition:all .15s ease;
+  }
+  .main-tab.active{background:var(--accent);color:#fff;}
+
+  /* Clickable cards */
+  .clickable{cursor:pointer;}
+
+  /* Detail page */
+  .detail-photo{
+    width:100%;aspect-ratio:1/1;background:var(--surface-2);
+    border-radius:var(--radius);overflow:hidden;margin-bottom:16px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .detail-photo img{width:100%;height:100%;object-fit:cover;}
+  .detail-photo.wide{aspect-ratio:16/10;}
+  .detail-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:4px;}
+  .detail-name{font-size:21px;font-weight:800;line-height:1.25;}
+  .detail-brand{font-size:13px;color:var(--accent);font-weight:700;margin-bottom:4px;}
+  .detail-price{font-size:16px;color:var(--muted);margin-bottom:14px;}
+  .detail-desc{font-size:14px;color:var(--text);line-height:1.6;margin-bottom:18px;white-space:pre-wrap;}
+
+  /* Like & comment */
+  .action-row{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    margin-bottom:18px;
+  }
+  .like-btn{
+    display:flex;align-items:center;gap:7px;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+    padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;
+    transition:all .15s ease;
+  }
+  .like-btn.liked{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .like-btn svg{flex-shrink:0;}
+  .comment-count{font-size:13px;color:var(--muted);font-weight:600;}
+
+  .comment-form{display:flex;gap:8px;margin-bottom:16px;}
+  .comment-form input{
+    flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+    padding:11px 14px;border-radius:11px;font-size:13.5px;outline:none;
+  }
+  .comment-form input:focus{border-color:var(--accent);}
+  .comment-list{display:flex;flex-direction:column;gap:12px;}
+  .comment-item{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:12px;padding:12px 14px;
+  }
+  .comment-author{font-size:12.5px;font-weight:700;margin-bottom:3px;}
+  .comment-text{font-size:13px;color:var(--text);line-height:1.5;}
+  .comment-time{font-size:10.5px;color:var(--muted);margin-top:5px;}
+
+  /* Chipset */
+  .chipset-list{display:flex;flex-direction:column;gap:12px;}
+  .chipset-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:14px 16px;
+    display:flex;gap:12px;
+  }
+  .chipset-photo{
+    width:64px;height:64px;border-radius:10px;object-fit:cover;
+    background:var(--surface-2);flex-shrink:0;
+  }
+  .chipset-info{flex:1;min-width:0;}
+  .chipset-name{font-size:15px;font-weight:700;}
+  .chipset-brand{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:6px;}
+  .chipset-specs{font-size:12.5px;color:var(--muted);line-height:1.5;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="2" width="12" height="20" rx="3" stroke="white" stroke-width="1.8"/>
+        <line x1="6" y1="18" x2="18" y2="18" stroke="white" stroke-width="1.8"/>
+        <circle cx="12" cy="20" r="0.9" fill="white"/>
+      </svg>
+    </span>
+    Fiction Phone
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-icon" id="btnChipsetTop" title="Buat Chipset">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="9" y1="2" x2="9" y2="7" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="15" y1="2" x2="15" y2="7" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="9" y1="17" x2="9" y2="22" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="15" y1="17" x2="15" y2="22" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="2" y1="9" x2="7" y2="9" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="2" y1="15" x2="7" y2="15" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="17" y1="9" x2="22" y2="9" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="17" y1="15" x2="22" y2="15" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+    </button>
+    <button class="btn btn-primary" id="btnNewTop">+ Buat HP</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- BERANDA -->
+  <section class="view active" id="view-home">
+    <div class="page-header">
+      <h1>Beranda</h1>
+    </div>
+
+    <div class="main-tabs" id="mainTabs">
+      <button class="main-tab active" data-maintab="phones">📱 HP</button>
+      <button class="main-tab" data-maintab="news">📰 Berita</button>
+    </div>
+
+    <div id="tabPhones">
+      <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-cat="all">Semua</button>
+        <button class="cat-tab" data-cat="entry">Entry Level</button>
+        <button class="cat-tab" data-cat="mid">Midrange</button>
+        <button class="cat-tab" data-cat="flagship">Flagship</button>
+      </div>
+      <div id="homeContent">
+        <div class="empty-state">Memuat data...</div>
+      </div>
+    </div>
+
+    <div id="tabNews" style="display:none;">
+      <div id="newsContent">
+        <div class="empty-state">Memuat berita...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM BUAT HP -->
+  <section class="view" id="view-create">
+    <div class="page-header"><h1>Buat HP Fiksi</h1></div>
+    <div class="form-card">
+      <div class="field">
+        <label>Nama HP</label>
+        <input type="text" id="f_name" placeholder="Contoh: Nova X1">
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Nama Brand</label>
+          <input type="text" id="f_brand" placeholder="Contoh: Novatech">
+        </div>
+        <div class="field">
+          <label>Harga</label>
+          <input type="text" id="f_price" placeholder="Contoh: Rp 8.000.000">
+        </div>
+      </div>
+      <div class="field">
+        <label>Kategori</label>
+        <select id="f_category">
+          <option value="entry">Entry Level</option>
+          <option value="mid">Midrange</option>
+          <option value="flagship">Flagship</option>
+        </select>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>RAM</label>
+          <input type="text" id="f_ram" placeholder="Contoh: 12GB">
+        </div>
+        <div class="field">
+          <label>Storage</label>
+          <input type="text" id="f_storage" placeholder="Contoh: 256GB">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Chipset</label>
+          <select id="f_chipset_select">
+            <option value="">-- Pilih Chipset --</option>
+            <option value="__custom__">Lainnya (ketik manual)</option>
+          </select>
+          <input type="text" id="f_chipset" placeholder="Contoh: Nova Core X9" style="margin-top:8px;display:none;">
+        </div>
+        <div class="field">
+          <label>Kamera</label>
+          <input type="text" id="f_camera" placeholder="Contoh: 108MP Triple Camera">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Baterai</label>
+          <input type="text" id="f_battery" placeholder="Contoh: 5000mAh">
+        </div>
+        <div class="field">
+          <label>Layar</label>
+          <input type="text" id="f_screen" placeholder="Contoh: 6.7&quot; AMOLED 120Hz">
+        </div>
+      </div>
+      <div class="field">
+        <label>Sistem Operasi</label>
+        <input type="text" id="f_os" placeholder="Contoh: NovaOS 4.0">
+      </div>
+      <div class="field">
+        <label>Deskripsi</label>
+        <textarea id="f_desc" placeholder="Ceritakan konsep HP fiksi kamu..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Foto HP</label>
+        <label class="upload-box" for="f_photo">
+          <img id="f_photo_preview" class="upload-preview" style="display:none;">
+          <span class="upload-text" id="f_photo_text">Pilih foto HP dari galeri</span>
+        </label>
+        <input type="file" id="f_photo" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label>Nama Kreator</label>
+        <input type="text" id="f_creatorname" placeholder="Nama kamu">
+      </div>
+      <div class="field">
+        <label>Foto Profil Kreator</label>
+        <label class="upload-box" for="f_avatar">
+          <img id="f_avatar_preview" class="upload-preview round" style="display:none;">
+          <span class="upload-text" id="f_avatar_text">Pilih foto profil dari galeri</span>
+        </label>
+        <input type="file" id="f_avatar" accept="image/*">
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelCreate">Batal</button>
+        <button class="btn btn-primary" id="btnGoPreview">Lihat Preview</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREVIEW HP -->
+  <section class="view" id="view-preview">
+    <div class="page-header"><h1>Preview</h1></div>
+    <div class="preview-phone">
+      <div class="preview-photo"><img id="p_photo"></div>
+      <div class="preview-body">
+        <div class="phone-brand" id="p_brand"></div>
+        <div class="phone-name" id="p_name" style="font-size:19px;"></div>
+        <div class="phone-price" id="p_price"></div>
+        <p class="phone-desc" id="p_desc" style="-webkit-line-clamp:unset;"></p>
+        <table class="spec-table">
+          <tr><td>Kategori</td><td id="p_category"></td></tr>
+          <tr><td>RAM</td><td id="p_ram"></td></tr>
+          <tr><td>Storage</td><td id="p_storage"></td></tr>
+          <tr><td>Chipset</td><td id="p_chipset"></td></tr>
+          <tr><td>Kamera</td><td id="p_camera"></td></tr>
+          <tr><td>Baterai</td><td id="p_battery"></td></tr>
+          <tr><td>Layar</td><td id="p_screen"></td></tr>
+          <tr><td>Sistem Operasi</td><td id="p_os"></td></tr>
+        </table>
+        <div class="phone-creator" style="margin-top:16px;">
+          <img id="p_avatar" class="avatar">
+          <span class="creator-name" id="p_creatorname"></span>
+        </div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" id="btnBackEdit">Edit Lagi</button>
+      <button class="btn btn-primary" id="btnPublish">Publikasikan</button>
+    </div>
+  </section>
+
+  <!-- FORM BUAT BERITA -->
+  <section class="view" id="view-news">
+    <div class="page-header"><h1>Buat Berita</h1></div>
+    <div class="form-card">
+      <div class="field">
+        <label>Judul Berita</label>
+        <input type="text" id="n_title" placeholder="Contoh: Novatech Umumkan Nova X1">
+      </div>
+      <div class="field">
+        <label>Foto Berita</label>
+        <label class="upload-box" for="n_photo">
+          <img id="n_photo_preview" class="upload-preview wide" style="display:none;">
+          <span class="upload-text" id="n_photo_text">Pilih foto berita dari galeri</span>
+        </label>
+        <input type="file" id="n_photo" accept="image/*">
+      </div>
+      <div class="field">
+        <label>Isi Berita</label>
+        <textarea id="n_content" placeholder="Tulis isi berita di sini..." style="min-height:120px;"></textarea>
+      </div>
+      <div class="field">
+        <label>Nama Pembuat</label>
+        <input type="text" id="n_author" placeholder="Nama kamu">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelNews">Batal</button>
+        <button class="btn btn-primary" id="btnPublishNews">Publikasikan Berita</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM BUAT CHIPSET -->
+  <section class="view" id="view-chipset">
+    <div class="page-header"><h1>Buat Chipset Fiksi</h1></div>
+    <div class="form-card">
+      <div class="field">
+        <label>Nama Chipset</label>
+        <input type="text" id="c_name" placeholder="Contoh: Nova Core X9">
+      </div>
+      <div class="field">
+        <label>Pabrikan</label>
+        <input type="text" id="c_brand" placeholder="Contoh: NovaSilicon">
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Proses Fabrikasi</label>
+          <input type="text" id="c_fab" placeholder="Contoh: 3nm">
+        </div>
+        <div class="field">
+          <label>Jumlah Core</label>
+          <input type="text" id="c_cores" placeholder="Contoh: Octa-core">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Kecepatan Clock</label>
+          <input type="text" id="c_clock" placeholder="Contoh: 3.4 GHz">
+        </div>
+        <div class="field">
+          <label>GPU</label>
+          <input type="text" id="c_gpu" placeholder="Contoh: NovaGPU X2">
+        </div>
+      </div>
+      <div class="field">
+        <label>AI Engine</label>
+        <input type="text" id="c_ai" placeholder="Contoh: NovaAI 2.0 (40 TOPS)">
+      </div>
+      <div class="field">
+        <label>Foto Chipset</label>
+        <label class="upload-box" for="c_photo">
+          <img id="c_photo_preview" class="upload-preview" style="display:none;">
+          <span class="upload-text" id="c_photo_text">Pilih foto chipset dari galeri (opsional)</span>
+        </label>
+        <input type="file" id="c_photo" accept="image/*">
+      </div>
+      <div class="field">
+        <label>Deskripsi</label>
+        <textarea id="c_desc" placeholder="Ceritakan keunggulan chipset ini..."></textarea>
+      </div>
+      <div class="field">
+        <label>Nama Pembuat</label>
+        <input type="text" id="c_creator" placeholder="Nama kamu">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelChipset">Batal</button>
+        <button class="btn btn-primary" id="btnPublishChipset">Publikasikan Chipset</button>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:28px;"><span class="bar"></span>Chipset yang Sudah Dibuat</div>
+    <div id="chipsetListContent">
+      <div class="empty-state">Memuat chipset...</div>
+    </div>
+  </section>
+
+  <!-- PEMBUAT WEB -->
+  <section class="view" id="view-about">
+    <div class="page-header"><h1>Pembuat Web</h1></div>
+    <div class="form-card" style="text-align:center;padding:36px 18px;">
+      <div style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;font-weight:700;">D</div>
+      <div style="font-size:19px;font-weight:700;margin-bottom:6px;">Dimas by anox</div>
+      <div style="font-size:13px;color:var(--muted);">Pembuat & pengembang website Fiction Phone</div>
+    </div>
+  </section>
+
+  <!-- DETAIL HP -->
+  <section class="view" id="view-phone-detail">
+    <div class="page-header">
+      <div class="title-row">
+        <button class="back-btn" id="btnBackFromPhoneDetail">←</button>
+        <h1>Detail HP</h1>
+      </div>
+    </div>
+    <div class="detail-photo" id="d_photo_wrap"><img id="d_photo"></div>
+    <div class="detail-brand" id="d_brand"></div>
+    <div class="detail-title-row">
+      <div class="detail-name" id="d_name"></div>
+    </div>
+    <div class="detail-price" id="d_price"></div>
+    <p class="detail-desc" id="d_desc"></p>
+    <table class="spec-table">
+      <tr><td>Kategori</td><td id="d_category"></td></tr>
+      <tr><td>RAM</td><td id="d_ram"></td></tr>
+      <tr><td>Storage</td><td id="d_storage"></td></tr>
+      <tr><td>Chipset</td><td id="d_chipset"></td></tr>
+      <tr><td>Kamera</td><td id="d_camera"></td></tr>
+      <tr><td>Baterai</td><td id="d_battery"></td></tr>
+      <tr><td>Layar</td><td id="d_screen"></td></tr>
+      <tr><td>Sistem Operasi</td><td id="d_os"></td></tr>
+    </table>
+    <div class="phone-creator" style="margin-top:16px;margin-bottom:6px;">
+      <img id="d_avatar" class="avatar" style="display:none;">
+      <div class="avatar-fallback" id="d_avatar_fallback">👤</div>
+      <span class="creator-name" id="d_creatorname"></span>
+    </div>
+
+    <div class="action-row">
+      <button class="like-btn" id="d_likeBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 20s-7-4.5-9.5-9C0.7 7.5 2 4 5.5 4c2 0 3.3 1 4.5 2.5C11.2 5 12.5 4 14.5 4 18 4 19.3 7.5 17.5 11c-2.5 4.5-9.5 9-9.5 9z" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span id="d_likeCount">0</span>
+      </button>
+      <span class="comment-count" id="d_commentCount">0 komentar</span>
+    </div>
+
+    <div class="comment-form">
+      <input type="text" id="d_commentInput" placeholder="Tulis komentar...">
+      <button class="btn btn-primary" id="d_commentSend">Kirim</button>
+    </div>
+    <div class="comment-list" id="d_commentList"></div>
+  </section>
+
+  <!-- DETAIL BERITA -->
+  <section class="view" id="view-news-detail">
+    <div class="page-header">
+      <div class="title-row">
+        <button class="back-btn" id="btnBackFromNewsDetail">←</button>
+        <h1>Detail Berita</h1>
+      </div>
+    </div>
+    <div class="detail-photo wide" id="n_detail_photo_wrap" style="display:none;"><img id="n_detail_photo"></div>
+    <div class="detail-name" id="n_detail_title" style="margin-bottom:8px;"></div>
+    <p class="detail-desc" id="n_detail_content"></p>
+    <div class="news-meta" style="border:none;padding-top:0;margin-bottom:6px;">
+      <span class="news-author" id="n_detail_author"></span>
+      <span class="news-time" id="n_detail_time"></span>
+    </div>
+
+    <div class="action-row">
+      <button class="like-btn" id="n_likeBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 20s-7-4.5-9.5-9C0.7 7.5 2 4 5.5 4c2 0 3.3 1 4.5 2.5C11.2 5 12.5 4 14.5 4 18 4 19.3 7.5 17.5 11c-2.5 4.5-9.5 9-9.5 9z" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span id="n_likeCount">0</span>
+      </button>
+      <span class="comment-count" id="n_commentCount">0 komentar</span>
+    </div>
+
+    <div class="comment-form">
+      <input type="text" id="n_commentInput" placeholder="Tulis komentar...">
+      <button class="btn btn-primary" id="n_commentSend">Kirim</button>
+    </div>
+    <div class="comment-list" id="n_commentList"></div>
+  </section>
+
+</main>
+
+<nav class="bottomnav">
+  <button class="navbtn active" data-view="home">
+    <span class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 11L12 4L20 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 9.5V19C6 19.5523 6.44772 20 7 20H10V15C10 14.4477 10.4477 14 11 14H13C13.5523 14 14 14.4477 14 15V20H17C17.5523 20 18 19.5523 18 19V9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    Beranda
+  </button>
+  <button class="navbtn" data-view="create">
+    <span class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="7" y="2.5" width="10" height="19" rx="2.4" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="7" y1="17.2" x2="17" y2="17.2" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="10.5" y1="19.6" x2="13.5" y2="19.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </span>
+    Buat HP
+  </button>
+  <button class="navbtn" data-view="news">
+    <span class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="7" y1="8.2" x2="17" y2="8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="7" y1="11.5" x2="17" y2="11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="7" y1="14.8" x2="13" y2="14.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </span>
+    Buat Berita
+  </button>
+  <button class="navbtn" data-view="about">
+    <span class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M5 20C5 16.5 8 14 12 14C16 14 19 16.5 19 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </span>
+    Pembuat Web
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ================= Firebase Setup ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyCFY8Tm7wgwiC3GehEW4Gp0oJosqT8vWok",
+  authDomain: "fictional-phone.firebaseapp.com",
+  projectId: "fictional-phone",
+  storageBucket: "fictional-phone.firebasestorage.app",
+  messagingSenderId: "909344745640",
+  appId: "1:909344745640:web:dd35a21f71572cdca3ba9d",
+  measurementId: "G-RLJJWR0W2T"
+};
+firebase.initializeApp(firebaseConfig);
+const fsdb = firebase.firestore();
+const COL_PHONES = "phones";
+const COL_NEWS = "news";
+const COL_CHIPSETS = "chipsets";
+const COL_COMMENTS = "comments";
+
+function addItem(collectionName, item){
+  return fsdb.collection(collectionName).doc(item.id).set(item);
+}
+
+function toggleLike(collectionName, id, alreadyLiked){
+  const ref = fsdb.collection(collectionName).doc(id);
+  const delta = alreadyLiked ? -1 : 1;
+  return ref.update({ likes: firebase.firestore.FieldValue.increment(delta) });
+}
+
+function addComment(parentType, parentId, author, text){
+  const comment = {
+    id: "cmt_" + Date.now() + "_" + Math.random().toString(36).slice(2,8),
+    parentType, parentId,
+    author: author || "Anonim",
+    text,
+    createdAt: Date.now()
+  };
+  return fsdb.collection(COL_COMMENTS).doc(comment.id).set(comment);
+}
+
+function getLikedSet(){
+  try{
+    return new Set(JSON.parse(localStorage.getItem("fp_liked") || "[]"));
+  }catch(e){ return new Set(); }
+}
+function saveLikedSet(set){
+  localStorage.setItem("fp_liked", JSON.stringify(Array.from(set)));
+}
+
+/* ================= Image Compression ================= */
+function compressImage(file, maxLongSide, quality){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        const longSide = Math.max(width, height);
+        if(longSide > maxLongSide){
+          const scale = maxLongSide / longSide;
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function smartCompress(file){
+  let dataUrl = await compressImage(file, 1000, 0.75);
+  let approxBytes = Math.round((dataUrl.length * 3) / 4);
+  if(approxBytes > 500 * 1024){
+    dataUrl = await compressImage(file, 600, 0.65);
+  }
+  return dataUrl;
+}
+
+async function avatarCompress(file){
+  // Avatar dibuat kecil karena cuma tampil sebagai ikon bulat kecil
+  return await compressImage(file, 260, 0.75);
+}
+
+/* ================= State ================= */
+let draft = {
+  name:"", brand:"", price:"", category:"entry", ram:"", storage:"", chipset:"",
+  camera:"", battery:"", screen:"", os:"", desc:"",
+  photo:null, creatorName:"", avatar:null
+};
+let newsDraft = { title:"", content:"", author:"", photo:null };
+let chipsetDraft = { photo:null };
+let currentFilter = "all";
+let currentMainTab = "phones";
+let allPhonesCache = [];
+let allNewsCache = [];
+let allChipsetsCache = [];
+let currentDetailPhone = null;
+let currentDetailNews = null;
+let unsubComments = null;
+
+const CATEGORY_LABELS = { entry:"Entry Level", mid:"Midrange", flagship:"Flagship" };
+
+/* ================= Navigation ================= */
+function showView(name){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById("view-" + name).classList.add("active");
+  document.querySelectorAll(".navbtn").forEach(b => {
+    b.classList.toggle("active", b.dataset.view === name);
+  });
+  window.scrollTo(0,0);
+}
+
+document.querySelectorAll(".navbtn").forEach(btn => {
+  btn.addEventListener("click", () => showView(btn.dataset.view));
+});
+document.getElementById("btnNewTop").addEventListener("click", () => showView("create"));
+document.getElementById("btnChipsetTop").addEventListener("click", () => showView("chipset"));
+document.getElementById("btnCancelCreate").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackEdit").addEventListener("click", () => showView("create"));
+document.getElementById("btnCancelNews").addEventListener("click", () => showView("home"));
+document.getElementById("btnCancelChipset").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromPhoneDetail").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromNewsDetail").addEventListener("click", () => showView("home"));
+
+/* ================= Main Tabs (HP / Berita) ================= */
+document.querySelectorAll(".main-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    currentMainTab = tab.dataset.maintab;
+    document.querySelectorAll(".main-tab").forEach(t => t.classList.toggle("active", t === tab));
+    document.getElementById("tabPhones").style.display = currentMainTab === "phones" ? "block" : "none";
+    document.getElementById("tabNews").style.display = currentMainTab === "news" ? "block" : "none";
+  });
+});
+
+/* ================= Toast ================= */
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ================= Chipset Select Handler ================= */
+document.getElementById("f_chipset_select").addEventListener("change", (e) => {
+  const val = e.target.value;
+  const customInput = document.getElementById("f_chipset");
+  if(val === "__custom__"){
+    customInput.style.display = "block";
+    customInput.value = "";
+    customInput.focus();
+  } else {
+    customInput.style.display = "none";
+    customInput.value = val;
+  }
+});
+
+function populateChipsetSelect(){
+  const select = document.getElementById("f_chipset_select");
+  const currentVal = select.value;
+  select.innerHTML = `<option value="">-- Pilih Chipset --</option>` +
+    allChipsetsCache.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} (${escapeHtml(c.brand)})</option>`).join("") +
+    `<option value="__custom__">Lainnya (ketik manual)</option>`;
+  if(Array.from(select.options).some(o => o.value === currentVal)){
+    select.value = currentVal;
+  }
+}
+
+/* ================= Upload Handlers: HP ================= */
+document.getElementById("f_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  document.getElementById("f_photo_text").textContent = "Mengompres foto...";
+  const compressed = await smartCompress(file);
+  draft.photo = compressed;
+  const prev = document.getElementById("f_photo_preview");
+  prev.src = compressed;
+  prev.style.display = "block";
+  document.getElementById("f_photo_text").textContent = "Foto HP terpilih ✓";
+});
+
+document.getElementById("f_avatar").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  document.getElementById("f_avatar_text").textContent = "Mengompres foto...";
+  const compressed = await avatarCompress(file);
+  draft.avatar = compressed;
+  const prev = document.getElementById("f_avatar_preview");
+  prev.src = compressed;
+  prev.style.display = "block";
+  document.getElementById("f_avatar_text").textContent = "Foto profil terpilih ✓";
+});
+
+/* ================= Upload Handler: Berita ================= */
+document.getElementById("n_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  document.getElementById("n_photo_text").textContent = "Mengompres foto...";
+  const compressed = await smartCompress(file);
+  newsDraft.photo = compressed;
+  const prev = document.getElementById("n_photo_preview");
+  prev.src = compressed;
+  prev.style.display = "block";
+  document.getElementById("n_photo_text").textContent = "Foto berita terpilih ✓";
+});
+
+/* ================= Upload Handler: Chipset ================= */
+document.getElementById("c_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  document.getElementById("c_photo_text").textContent = "Mengompres foto...";
+  const compressed = await avatarCompress(file);
+  chipsetDraft.photo = compressed;
+  const prev = document.getElementById("c_photo_preview");
+  prev.src = compressed;
+  prev.style.display = "block";
+  document.getElementById("c_photo_text").textContent = "Foto chipset terpilih ✓";
+});
+
+/* ================= Go to Preview HP ================= */
+document.getElementById("btnGoPreview").addEventListener("click", () => {
+  draft.name = document.getElementById("f_name").value.trim();
+  draft.brand = document.getElementById("f_brand").value.trim();
+  draft.price = document.getElementById("f_price").value.trim();
+  draft.category = document.getElementById("f_category").value;
+  draft.ram = document.getElementById("f_ram").value.trim();
+  draft.storage = document.getElementById("f_storage").value.trim();
+  draft.chipset = document.getElementById("f_chipset").value.trim();
+  draft.camera = document.getElementById("f_camera").value.trim();
+  draft.battery = document.getElementById("f_battery").value.trim();
+  draft.screen = document.getElementById("f_screen").value.trim();
+  draft.os = document.getElementById("f_os").value.trim();
+  draft.desc = document.getElementById("f_desc").value.trim();
+  draft.creatorName = document.getElementById("f_creatorname").value.trim();
+
+  if(!draft.name || !draft.brand){
+    showToast("Nama HP dan Brand wajib diisi");
+    return;
+  }
+  if(!draft.photo){
+    showToast("Pilih foto HP terlebih dahulu");
+    return;
+  }
+
+  fillPreview();
+  showView("preview");
+});
+
+function fillPreview(){
+  document.getElementById("p_photo").src = draft.photo;
+  document.getElementById("p_brand").textContent = draft.brand;
+  document.getElementById("p_name").textContent = draft.name;
+  document.getElementById("p_price").textContent = draft.price;
+  document.getElementById("p_desc").textContent = draft.desc;
+  document.getElementById("p_category").textContent = CATEGORY_LABELS[draft.category];
+  document.getElementById("p_ram").textContent = draft.ram || "-";
+  document.getElementById("p_storage").textContent = draft.storage || "-";
+  document.getElementById("p_chipset").textContent = draft.chipset || "-";
+  document.getElementById("p_camera").textContent = draft.camera || "-";
+  document.getElementById("p_battery").textContent = draft.battery || "-";
+  document.getElementById("p_screen").textContent = draft.screen || "-";
+  document.getElementById("p_os").textContent = draft.os || "-";
+  document.getElementById("p_creatorname").textContent = draft.creatorName || "Anonim";
+  const av = document.getElementById("p_avatar");
+  if(draft.avatar){
+    av.src = draft.avatar;
+    av.style.display = "inline-block";
+  } else {
+    av.style.display = "none";
+  }
+}
+
+/* ================= Publish HP ================= */
+document.getElementById("btnPublish").addEventListener("click", async () => {
+  const phone = {
+    id: "phone_" + Date.now() + "_" + Math.random().toString(36).slice(2,8),
+    createdAt: Date.now(),
+    name: draft.name,
+    brand: draft.brand,
+    price: draft.price,
+    category: draft.category,
+    ram: draft.ram,
+    storage: draft.storage,
+    chipset: draft.chipset,
+    camera: draft.camera,
+    battery: draft.battery,
+    screen: draft.screen,
+    os: draft.os,
+    desc: draft.desc,
+    photo: draft.photo,
+    creatorName: draft.creatorName || "Anonim",
+    avatar: draft.avatar,
+    likes: 0
+  };
+
+  try{
+    showToast("Mengunggah HP...");
+    await addItem(COL_PHONES, phone);
+    showToast("HP berhasil dipublikasikan!");
+    resetPhoneForm();
+    currentFilter = "all";
+    updateCatTabsUI();
+    showView("home");
+  }catch(err){
+    console.error(err);
+    showToast("Gagal menyimpan data, cek koneksi internet");
+  }
+});
+
+function resetPhoneForm(){
+  draft = {
+    name:"", brand:"", price:"", category:"entry", ram:"", storage:"", chipset:"",
+    camera:"", battery:"", screen:"", os:"", desc:"",
+    photo:null, creatorName:"", avatar:null
+  };
+  document.querySelectorAll("#view-create input[type=text], #view-create textarea").forEach(el => el.value = "");
+  document.getElementById("f_category").value = "entry";
+  document.getElementById("f_photo_preview").style.display = "none";
+  document.getElementById("f_photo_text").textContent = "Pilih foto HP dari galeri";
+  document.getElementById("f_avatar_preview").style.display = "none";
+  document.getElementById("f_avatar_text").textContent = "Pilih foto profil dari galeri";
+  document.getElementById("f_photo").value = "";
+  document.getElementById("f_avatar").value = "";
+  document.getElementById("f_chipset_select").value = "";
+  document.getElementById("f_chipset").style.display = "none";
+}
+
+/* ================= Publish Berita ================= */
+document.getElementById("btnPublishNews").addEventListener("click", async () => {
+  newsDraft.title = document.getElementById("n_title").value.trim();
+  newsDraft.content = document.getElementById("n_content").value.trim();
+  newsDraft.author = document.getElementById("n_author").value.trim();
+
+  if(!newsDraft.title || !newsDraft.content){
+    showToast("Judul dan isi berita wajib diisi");
+    return;
+  }
+
+  const news = {
+    id: "news_" + Date.now() + "_" + Math.random().toString(36).slice(2,8),
+    createdAt: Date.now(),
+    title: newsDraft.title,
+    content: newsDraft.content,
+    author: newsDraft.author || "Anonim",
+    photo: newsDraft.photo,
+    likes: 0
+  };
+
+  try{
+    showToast("Mengunggah berita...");
+    await addItem(COL_NEWS, news);
+    showToast("Berita berhasil dipublikasikan!");
+    resetNewsForm();
+    showView("home");
+  }catch(err){
+    console.error(err);
+    showToast("Gagal menyimpan berita, cek koneksi internet");
+  }
+});
+
+function resetNewsForm(){
+  newsDraft = { title:"", content:"", author:"", photo:null };
+  document.getElementById("n_title").value = "";
+  document.getElementById("n_content").value = "";
+  document.getElementById("n_author").value = "";
+  document.getElementById("n_photo_preview").style.display = "none";
+  document.getElementById("n_photo_text").textContent = "Pilih foto berita dari galeri";
+  document.getElementById("n_photo").value = "";
+}
+
+/* ================= Publish Chipset ================= */
+document.getElementById("btnPublishChipset").addEventListener("click", async () => {
+  const name = document.getElementById("c_name").value.trim();
+  const brand = document.getElementById("c_brand").value.trim();
+  const fab = document.getElementById("c_fab").value.trim();
+  const cores = document.getElementById("c_cores").value.trim();
+  const clock = document.getElementById("c_clock").value.trim();
+  const gpu = document.getElementById("c_gpu").value.trim();
+  const ai = document.getElementById("c_ai").value.trim();
+  const desc = document.getElementById("c_desc").value.trim();
+  const creator = document.getElementById("c_creator").value.trim();
+
+  if(!name || !brand){
+    showToast("Nama chipset dan pabrikan wajib diisi");
+    return;
+  }
+
+  const chipset = {
+    id: "chipset_" + Date.now() + "_" + Math.random().toString(36).slice(2,8),
+    createdAt: Date.now(),
+    name, brand, fab, cores, clock, gpu, ai, desc,
+    creatorName: creator || "Anonim",
+    photo: chipsetDraft.photo
+  };
+
+  try{
+    showToast("Mengunggah chipset...");
+    await addItem(COL_CHIPSETS, chipset);
+    showToast("Chipset berhasil dipublikasikan!");
+    resetChipsetForm();
+  }catch(err){
+    console.error(err);
+    showToast("Gagal menyimpan chipset, cek koneksi internet");
+  }
+});
+
+function resetChipsetForm(){
+  ["c_name","c_brand","c_fab","c_cores","c_clock","c_gpu","c_ai","c_desc","c_creator"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  chipsetDraft = { photo:null };
+  document.getElementById("c_photo_preview").style.display = "none";
+  document.getElementById("c_photo_text").textContent = "Pilih foto chipset dari galeri (opsional)";
+  document.getElementById("c_photo").value = "";
+}
+
+function renderChipsetList(chipsets){
+  const container = document.getElementById("chipsetListContent");
+  if(chipsets.length === 0){
+    container.innerHTML = `<div class="empty-state">Belum ada chipset. Jadilah yang pertama membuat chipset!</div>`;
+    return;
+  }
+  container.innerHTML = `<div class="chipset-list">${chipsets.map(c => `
+    <div class="chipset-card">
+      ${c.photo
+        ? `<img src="${c.photo}" class="chipset-photo">`
+        : `<div class="chipset-photo" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:22px;">🧩</div>`
+      }
+      <div class="chipset-info">
+        <div class="chipset-brand">${escapeHtml(c.brand)}</div>
+        <div class="chipset-name">${escapeHtml(c.name)}</div>
+        <div class="chipset-specs">
+          ${c.fab ? `Fabrikasi: ${escapeHtml(c.fab)} · ` : ""}${c.cores ? `${escapeHtml(c.cores)} · ` : ""}${c.clock ? escapeHtml(c.clock) : ""}
+          ${c.gpu ? `<br>GPU: ${escapeHtml(c.gpu)}` : ""}
+          ${c.ai ? `<br>AI: ${escapeHtml(c.ai)}` : ""}
+          ${c.desc ? `<br>${escapeHtml(c.desc)}` : ""}
+        </div>
+      </div>
+    </div>
+  `).join("")}</div>`;
+}
+
+/* ================= Category Filter ================= */
+document.querySelectorAll(".cat-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    currentFilter = tab.dataset.cat;
+    updateCatTabsUI();
+    renderPhoneGrid();
+  });
+});
+
+function updateCatTabsUI(){
+  document.querySelectorAll(".cat-tab").forEach(t => {
+    t.classList.toggle("active", t.dataset.cat === currentFilter);
+  });
+}
+
+/* ================= Render Helpers ================= */
+function escapeHtml(str){
+  const div = document.createElement("div");
+  div.textContent = str || "";
+  return div.innerHTML;
+}
+
+function formatTimeAgo(ts){
+  const diff = Date.now() - ts;
+  const min = Math.floor(diff / 60000);
+  if(min < 1) return "Baru saja";
+  if(min < 60) return min + " menit lalu";
+  const hr = Math.floor(min / 60);
+  if(hr < 24) return hr + " jam lalu";
+  const day = Math.floor(hr / 24);
+  return day + " hari lalu";
+}
+
+function renderNewsList(news){
+  const container = document.getElementById("newsContent");
+
+  if(news.length === 0){
+    container.innerHTML = `<div class="empty-state">Belum ada berita. Jadilah yang pertama membuat berita!</div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="news-list">${news.map(n => `
+    <div class="news-card clickable" data-newsid="${n.id}">
+      ${n.photo ? `<div class="news-photo"><img src="${n.photo}"></div>` : ``}
+      <div class="news-body">
+        <div class="news-title">${escapeHtml(n.title)}</div>
+        <div class="news-content">${escapeHtml(n.content)}</div>
+        <div class="news-meta">
+          <span class="news-author">${escapeHtml(n.author)}</span>
+          <span class="news-time">${formatTimeAgo(n.createdAt)}</span>
+        </div>
+      </div>
+    </div>
+  `).join("")}</div>`;
+
+  container.querySelectorAll(".news-card").forEach(el => {
+    el.addEventListener("click", () => openNewsDetail(el.dataset.newsid));
+  });
+}
+
+function renderPhoneGrid(){
+  const container = document.getElementById("homeContent");
+  let phones = allPhonesCache.slice();
+  if(currentFilter !== "all"){
+    phones = phones.filter(p => p.category === currentFilter);
+  }
+
+  if(phones.length === 0){
+    container.innerHTML = `<div class="empty-state"><span class="emoji">📱</span>Belum ada HP di kategori ini.</div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="phone-grid">${phones.map(p => `
+    <div class="phone-card clickable" data-phoneid="${p.id}">
+      <div class="phone-photo-wrap">
+        <span class="cat-badge">${CATEGORY_LABELS[p.category] || "Entry Level"}</span>
+        <img src="${p.photo}" alt="${escapeHtml(p.name)}">
+      </div>
+      <div class="phone-body">
+        <div class="phone-brand">${escapeHtml(p.brand)}</div>
+        <div class="phone-name">${escapeHtml(p.name)}</div>
+        <div class="phone-price">${escapeHtml(p.price)}</div>
+        <div class="phone-desc">${escapeHtml(p.desc)}</div>
+        <div class="phone-creator">
+          ${p.avatar
+            ? `<img src="${p.avatar}" class="avatar">`
+            : `<div class="avatar-fallback">👤</div>`
+          }
+          <span class="creator-name">${escapeHtml(p.creatorName)}</span>
+        </div>
+      </div>
+    </div>
+  `).join("")}</div>`;
+
+  container.querySelectorAll(".phone-card").forEach(el => {
+    el.addEventListener("click", () => openPhoneDetail(el.dataset.phoneid));
+  });
+}
+
+/* ================= Detail HP ================= */
+function openPhoneDetail(id){
+  const p = allPhonesCache.find(x => x.id === id);
+  if(!p) return;
+  currentDetailPhone = p;
+
+  document.getElementById("d_photo").src = p.photo;
+  document.getElementById("d_brand").textContent = p.brand;
+  document.getElementById("d_name").textContent = p.name;
+  document.getElementById("d_price").textContent = p.price;
+  document.getElementById("d_desc").textContent = p.desc;
+  document.getElementById("d_category").textContent = CATEGORY_LABELS[p.category] || "-";
+  document.getElementById("d_ram").textContent = p.ram || "-";
+  document.getElementById("d_storage").textContent = p.storage || "-";
+  document.getElementById("d_chipset").textContent = p.chipset || "-";
+  document.getElementById("d_camera").textContent = p.camera || "-";
+  document.getElementById("d_battery").textContent = p.battery || "-";
+  document.getElementById("d_screen").textContent = p.screen || "-";
+  document.getElementById("d_os").textContent = p.os || "-";
+  document.getElementById("d_creatorname").textContent = p.creatorName || "Anonim";
+
+  const av = document.getElementById("d_avatar");
+  const avFallback = document.getElementById("d_avatar_fallback");
+  if(p.avatar){
+    av.src = p.avatar; av.style.display = "block"; avFallback.style.display = "none";
+  } else {
+    av.style.display = "none"; avFallback.style.display = "flex";
+  }
+
+  const likedSet = getLikedSet();
+  const likeKey = "phone_" + p.id;
+  const likeBtn = document.getElementById("d_likeBtn");
+  likeBtn.classList.toggle("liked", likedSet.has(likeKey));
+  document.getElementById("d_likeCount").textContent = p.likes || 0;
+
+  document.getElementById("d_commentInput").value = "";
+  listenComments("phone", p.id, "d_commentList", "d_commentCount");
+
+  showView("phone-detail");
+}
+
+document.getElementById("d_likeBtn").addEventListener("click", async () => {
+  if(!currentDetailPhone) return;
+  const likedSet = getLikedSet();
+  const likeKey = "phone_" + currentDetailPhone.id;
+  const already = likedSet.has(likeKey);
+  try{
+    await toggleLike(COL_PHONES, currentDetailPhone.id, already);
+    if(already) likedSet.delete(likeKey); else likedSet.add(likeKey);
+    saveLikedSet(likedSet);
+    document.getElementById("d_likeBtn").classList.toggle("liked", !already);
+    const countEl = document.getElementById("d_likeCount");
+    countEl.textContent = Math.max(0, (parseInt(countEl.textContent) || 0) + (already ? -1 : 1));
+  }catch(err){
+    console.error(err);
+    showToast("Gagal like, cek koneksi internet");
+  }
+});
+
+document.getElementById("d_commentSend").addEventListener("click", async () => {
+  const input = document.getElementById("d_commentInput");
+  const text = input.value.trim();
+  if(!text || !currentDetailPhone) return;
+  try{
+    await addComment("phone", currentDetailPhone.id, draft.creatorName, text);
+    input.value = "";
+  }catch(err){
+    console.error(err);
+    showToast("Gagal kirim komentar");
+  }
+});
+
+/* ================= Detail Berita ================= */
+function openNewsDetail(id){
+  const n = allNewsCache.find(x => x.id === id);
+  if(!n) return;
+  currentDetailNews = n;
+
+  const photoWrap = document.getElementById("n_detail_photo_wrap");
+  if(n.photo){
+    document.getElementById("n_detail_photo").src = n.photo;
+    photoWrap.style.display = "block";
+  } else {
+    photoWrap.style.display = "none";
+  }
+  document.getElementById("n_detail_title").textContent = n.title;
+  document.getElementById("n_detail_content").textContent = n.content;
+  document.getElementById("n_detail_author").textContent = n.author;
+  document.getElementById("n_detail_time").textContent = formatTimeAgo(n.createdAt);
+
+  const likedSet = getLikedSet();
+  const likeKey = "news_" + n.id;
+  const likeBtn = document.getElementById("n_likeBtn");
+  likeBtn.classList.toggle("liked", likedSet.has(likeKey));
+  document.getElementById("n_likeCount").textContent = n.likes || 0;
+
+  document.getElementById("n_commentInput").value = "";
+  listenComments("news", n.id, "n_commentList", "n_commentCount");
+
+  showView("news-detail");
+}
+
+document.getElementById("n_likeBtn").addEventListener("click", async () => {
+  if(!currentDetailNews) return;
+  const likedSet = getLikedSet();
+  const likeKey = "news_" + currentDetailNews.id;
+  const already = likedSet.has(likeKey);
+  try{
+    await toggleLike(COL_NEWS, currentDetailNews.id, already);
+    if(already) likedSet.delete(likeKey); else likedSet.add(likeKey);
+    saveLikedSet(likedSet);
+    document.getElementById("n_likeBtn").classList.toggle("liked", !already);
+    const countEl = document.getElementById("n_likeCount");
+    countEl.textContent = Math.max(0, (parseInt(countEl.textContent) || 0) + (already ? -1 : 1));
+  }catch(err){
+    console.error(err);
+    showToast("Gagal like, cek koneksi internet");
+  }
+});
+
+document.getElementById("n_commentSend").addEventListener("click", async () => {
+  const input = document.getElementById("n_commentInput");
+  const text = input.value.trim();
+  if(!text || !currentDetailNews) return;
+  try{
+    await addComment("news", currentDetailNews.id, newsDraft.author, text);
+    input.value = "";
+  }catch(err){
+    console.error(err);
+    showToast("Gagal kirim komentar");
+  }
+});
+
+/* ================= Comments Realtime ================= */
+function listenComments(parentType, parentId, listElId, countElId){
+  if(unsubComments) unsubComments();
+  const listEl = document.getElementById(listElId);
+  listEl.innerHTML = `<div class="empty-state">Memuat komentar...</div>`;
+  unsubComments = fsdb.collection(COL_COMMENTS)
+    .where("parentType", "==", parentType)
+    .where("parentId", "==", parentId)
+    .onSnapshot((snapshot) => {
+      const comments = snapshot.docs.map(d => d.data());
+      comments.sort((a,b) => b.createdAt - a.createdAt);
+      document.getElementById(countElId).textContent = comments.length + " komentar";
+      if(comments.length === 0){
+        listEl.innerHTML = `<div class="empty-state">Belum ada komentar. Jadilah yang pertama!</div>`;
+        return;
+      }
+      listEl.innerHTML = comments.map(c => `
+        <div class="comment-item">
+          <div class="comment-author">${escapeHtml(c.author)}</div>
+          <div class="comment-text">${escapeHtml(c.text)}</div>
+          <div class="comment-time">${formatTimeAgo(c.createdAt)}</div>
+        </div>
+      `).join("");
+    }, (err) => {
+      console.error(err);
+      listEl.innerHTML = `<div class="empty-state">⚠️ Gagal memuat komentar.</div>`;
+    });
+}
+
+/* ================= Init: Realtime Listeners ================= */
+function initListeners(){
+  fsdb.collection(COL_PHONES).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allPhonesCache = snapshot.docs.map(doc => doc.data());
+    renderPhoneGrid();
+  }, (err) => {
+    console.error(err);
+    document.getElementById("homeContent").innerHTML =
+      `<div class="empty-state">⚠️ Gagal memuat data HP. Cek koneksi internet.</div>`;
+  });
+
+  fsdb.collection(COL_NEWS).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allNewsCache = snapshot.docs.map(doc => doc.data());
+    renderNewsList(allNewsCache);
+  }, (err) => {
+    console.error(err);
+    document.getElementById("newsContent").innerHTML =
+      `<div class="empty-state">⚠️ Gagal memuat berita. Cek koneksi internet.</div>`;
+  });
+
+  fsdb.collection(COL_CHIPSETS).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allChipsetsCache = snapshot.docs.map(doc => doc.data());
+    renderChipsetList(allChipsetsCache);
+    populateChipsetSelect();
+  }, (err) => {
+    console.error(err);
+    document.getElementById("chipsetListContent").innerHTML =
+      `<div class="empty-state">⚠️ Gagal memuat chipset.</div>`;
+  });
+}
+
+initListeners();
+</script>
+
+</body>
+</html>
