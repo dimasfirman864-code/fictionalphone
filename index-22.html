@@ -1,0 +1,2685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiction Phone</title>
+<style>
+  :root{
+    --bg:#070707;
+    --surface:#131313;
+    --surface-2:#1c1c1c;
+    --surface-3:#242424;
+    --border:#292929;
+    --text:#ffffff;
+    --muted:#98989c;
+    --accent:#ef1f30;
+    --accent-dark:#b6141f;
+    --radius:18px;
+    --radius-sm:12px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:linear-gradient(120deg,#1a0000,#2b2b2b,#3d0606,#1c1c1c,#5a0d12,#2f2f2f);
+    background-size:400% 400%;
+    animation:bgMove 22s ease infinite;
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;padding-bottom:88px;letter-spacing:0.1px;
+  }
+  @keyframes bgMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  svg{display:block;}
+
+  .glass{
+    background:rgba(255,255,255,0.055);
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border:1px solid rgba(255,255,255,0.09);
+  }
+
+  header.topbar{
+    position:sticky;top:0;z-index:30;
+    background:rgba(7,7,7,0.75);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
+  .brand .logo{
+    width:34px;height:34px;border-radius:11px;
+    background:transparent;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .header-actions{display:flex;align-items:center;gap:8px;}
+  .icon-btn{
+    position:relative;width:40px;height:40px;border-radius:13px;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .icon-btn:active{transform:scale(0.94);}
+  .more-menu-item{
+    display:flex;align-items:center;gap:10px;width:100%;
+    background:none;border:none;color:var(--text);padding:11px 12px;border-radius:10px;
+    font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;text-align:left;
+  }
+  .more-menu-item:active{background:rgba(255,255,255,0.08);}
+  .badge-dot{
+    position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;padding:0 4px;
+    background:var(--accent);color:#fff;font-size:10px;font-weight:800;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);
+  }
+  .avatar-btn{
+    width:40px;height:40px;border-radius:13px;overflow:hidden;
+    border:1px solid var(--border);background:var(--surface-2);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;color:var(--muted);
+  }
+  .avatar-btn img{width:100%;height:100%;object-fit:cover;}
+
+  .btn{border:none;cursor:pointer;border-radius:var(--radius-sm);padding:12px 18px;font-size:14px;font-weight:700;transition:transform .12s ease,opacity .15s ease,background .2s ease;font-family:inherit;}
+  .btn:active{transform:scale(0.96);}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-ghost{background:var(--surface-2);color:var(--text);border:1px solid var(--border);}
+  .btn-block{width:100%;}
+
+  main{max-width:960px;margin:0 auto;padding:18px 16px 40px;}
+  .view{display:none;animation:fadeIn .22s ease;}
+  .view.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .section-title{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin:22px 2px 12px;font-weight:800;}
+  .section-title:first-child{margin-top:2px;}
+
+  .main-tabs{display:flex;border-radius:999px;padding:4px;margin-bottom:16px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;}
+  .main-tabs::-webkit-scrollbar{display:none;}
+  .main-tab{
+    flex:1;flex-shrink:0;min-width:76px;background:none;border:none;color:#fff;padding:10px 8px;border-radius:999px;
+    font-size:11.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+    transition:all .15s ease;font-family:inherit;white-space:nowrap;
+  }
+  .main-tab.active{background:var(--accent);color:#fff;}
+  .main-tab svg{opacity:0.7;}
+  .main-tab.active svg{opacity:1;}
+
+  /* Search bar */
+  .search-bar{
+    display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);
+    border-radius:999px;padding:10px 15px;margin-bottom:14px;color:var(--muted);
+  }
+  .search-bar input{
+    flex:1;background:none;border:none;color:var(--text);font-size:13.5px;outline:none;font-family:inherit;
+  }
+  .search-bar input::placeholder{color:var(--muted);}
+
+  /* Sort row */
+  .sort-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;}
+  .sort-tabs{display:flex;gap:6px;}
+  .sort-tab{background:var(--surface-2);border:1px solid var(--border);color:#fff;opacity:0.6;padding:7px 13px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .sort-tab.active{background:var(--accent);border-color:var(--accent);opacity:1;}
+  .btn-sm{padding:8px 13px;font-size:11.5px;}
+
+  /* Compare */
+  .compare-bar{
+    position:fixed;bottom:100px;left:14px;right:14px;z-index:35;
+    background:rgba(20,20,20,0.95);backdrop-filter:blur(16px);border:1px solid var(--border);
+    border-radius:16px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    font-size:12.5px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  }
+  .phone-card.compare-selected{outline:2px solid var(--accent);}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .compare-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+  .compare-col img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:10px;}
+  .compare-col .cname{font-size:13.5px;font-weight:800;margin-bottom:8px;}
+  .compare-row{display:flex;flex-direction:column;gap:4px;padding:7px 0;border-top:1px solid var(--border);font-size:11.5px;}
+  .compare-badge{font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:6px;}
+  .compare-badge.win{background:var(--accent);color:#fff;}
+  .compare-badge.tie{background:var(--surface-2);color:var(--muted);}
+  .compare-bar-track{width:100%;height:5px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin-top:2px;}
+  .compare-bar-fill{height:100%;border-radius:999px;background:var(--muted);}
+  .compare-bar-fill.win{background:var(--accent);}
+  .compare-row .lbl{color:var(--muted);font-size:9.5px;text-transform:uppercase;}
+
+  /* Photo gallery */
+  .photo-gallery-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+  .photo-gallery-preview .thumb-wrap{position:relative;width:64px;height:64px;}
+  .photo-gallery-preview img{width:64px;height:64px;border-radius:10px;object-fit:cover;}
+  .photo-gallery-preview .remove-thumb{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;cursor:pointer;}
+  .photo-thumbs{display:flex;gap:8px;margin-bottom:14px;}
+  .photo-thumbs img{width:56px;height:56px;border-radius:10px;object-fit:cover;cursor:pointer;opacity:0.55;border:2px solid transparent;}
+  .photo-thumbs img.active{opacity:1;border-color:var(--accent);}
+
+  /* Leaderboard */
+  .lb-item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;cursor:pointer;}
+  .lb-rank{width:28px;text-align:center;font-weight:800;font-size:14px;color:var(--accent);flex-shrink:0;}
+  .lb-name{font-size:13.5px;font-weight:700;}
+  .lb-stat{font-size:11px;color:var(--muted);margin-left:auto;}
+
+  /* Comment like */
+  .comment-like-btn{display:flex;align-items:center;gap:4px;background:none;border:none;color:var(--muted);font-size:10.5px;font-weight:700;cursor:pointer;font-family:inherit;padding:0;}
+  .comment-like-btn.liked{color:var(--accent);}
+
+  .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;-ms-overflow-style:none;scrollbar-width:none;}
+  .cat-tabs::-webkit-scrollbar{display:none;}
+  .cat-tab{flex-shrink:0;background:var(--surface-2);border:1px solid var(--border);color:#fff;padding:8px 15px;border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s ease;font-family:inherit;}
+  .cat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  .author-row{display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .author-row:active{opacity:0.7;}
+  .avatar{width:24px;height:24px;border-radius:50%;object-fit:cover;background:var(--surface-3);flex-shrink:0;}
+  .avatar-fallback{width:24px;height:24px;border-radius:50%;background:var(--surface-3);display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;}
+  .avatar-fallback.lg{width:80px;height:80px;border-radius:22px;}
+  .avatar-fallback svg{width:50%;height:50%;}
+  .author-name{font-size:12px;color:var(--muted);font-weight:600;}
+
+  .news-list{display:flex;flex-direction:column;gap:14px;}
+  .news-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:border-color .15s ease;}
+  .news-card:active{border-color:#3d3d3d;}
+  .news-photo{width:100%;max-height:230px;overflow:hidden;}
+  .news-photo img{width:100%;object-fit:cover;max-height:230px;}
+  .news-body{padding:15px;}
+  .news-title{font-size:15.5px;font-weight:800;margin-bottom:6px;line-height:1.3;}
+  .news-content{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .news-meta{display:flex;align-items:center;gap:8px;padding-top:11px;border-top:1px solid var(--border);}
+  .news-time{font-size:10.5px;color:var(--muted);margin-left:auto;}
+
+  .phone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:14px;}
+  .phone-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .15s ease,border-color .15s ease;}
+  .phone-card:active{transform:scale(0.98);border-color:#3d3d3d;}
+  .phone-photo-wrap{width:100%;aspect-ratio:1/1;background:var(--surface-2);position:relative;overflow:hidden;}
+  .phone-photo-wrap img{width:100%;height:100%;object-fit:cover;}
+  .cat-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:#fff;font-size:9.5px;font-weight:800;padding:4px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:0.4px;}
+  .video-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .phone-body{padding:13px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1;}
+  .phone-brand{font-size:11px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:0.4px;}
+  .phone-name{font-size:15.5px;font-weight:800;line-height:1.25;}
+  .phone-price{font-size:13.5px;color:var(--muted);font-weight:600;}
+  .phone-desc{font-size:12.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:2px 0 4px;}
+  .card-footer{margin-top:auto;padding-top:10px;border-top:1px solid var(--border);}
+
+  .empty-state{text-align:center;padding:38px 20px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:13.5px;}
+
+  .form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+  .field{margin-bottom:15px;}
+  .field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px;font-weight:700;}
+  .field input[type=text],.field textarea,.field select{
+    width:100%;background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+    padding:12px 13px;border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;
+    transition:border-color .15s ease;appearance:none;-webkit-appearance:none;
+  }
+  .field select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2398989c' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat:no-repeat;background-position:right 13px center;padding-right:34px;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+  .field textarea{resize:vertical;min-height:80px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:520px){.grid-2{grid-template-columns:1fr;}}
+
+  .upload-box{display:flex;align-items:center;gap:14px;background:var(--surface-2);border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;cursor:pointer;}
+  .upload-preview{width:54px;height:54px;border-radius:10px;background:var(--bg);object-fit:cover;flex-shrink:0;}
+  .upload-preview.round{border-radius:50%;}
+  .upload-text{font-size:12.5px;color:var(--muted);}
+  .upload-box input[type=file]{display:none;}
+  .video-preview{width:100%;border-radius:var(--radius-sm);margin-top:10px;background:#000;}
+
+  .form-actions{display:flex;gap:10px;margin-top:20px;}
+  .form-actions .btn{flex:1;}
+
+  .detail-photo{width:100%;aspect-ratio:1/1;background:var(--surface-2);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;cursor:zoom-in;position:relative;}
+  .detail-photo img{width:100%;height:100%;object-fit:cover;}
+  .detail-photo.wide{aspect-ratio:16/10;}
+  .zoom-hint{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .detail-video{width:100%;border-radius:var(--radius);margin-bottom:14px;background:#000;}
+  .detail-brand{font-size:12px;color:var(--accent);font-weight:800;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px;}
+  .detail-name{font-size:22px;font-weight:800;line-height:1.25;margin-bottom:4px;}
+  .detail-price{font-size:15px;color:var(--muted);font-weight:700;margin-bottom:14px;}
+  .detail-desc{font-size:14px;color:var(--text);line-height:1.65;margin-bottom:18px;white-space:pre-wrap;}
+
+  .spec-group{margin-bottom:16px;}
+  .spec-group-title{font-size:11.5px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:0.6px;padding-bottom:8px;margin-bottom:2px;border-bottom:1px solid var(--border);}
+  .spec-table{width:100%;border-collapse:collapse;}
+  .spec-table tr{border-top:1px solid var(--border);}
+  .spec-table tr:first-child{border-top:none;}
+  .spec-table td{padding:10px 4px;font-size:13px;}
+  .spec-table td:first-child{color:var(--muted);width:42%;}
+
+  .action-row{display:flex;align-items:center;gap:10px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:16px 0 18px;}
+  .like-btn,.share-btn{
+    display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:9px 15px;border-radius:999px;
+    font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s ease;
+  }
+  .like-btn.liked{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .comment-count{font-size:12.5px;color:var(--muted);font-weight:600;margin-left:auto;}
+
+  .reply-banner{display:none;align-items:center;justify-content:space-between;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 13px;margin-bottom:10px;font-size:12px;color:var(--muted);}
+  .reply-banner b{color:var(--text);}
+  .reply-banner .closeReply{cursor:pointer;color:var(--muted);font-weight:800;padding:0 4px;}
+  .comment-form{display:flex;gap:8px;margin-bottom:16px;}
+  .comment-form input{flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:var(--radius-sm);font-size:13.5px;outline:none;font-family:inherit;}
+  .comment-form input:focus{border-color:var(--accent);}
+  .comment-list{display:flex;flex-direction:column;gap:10px;}
+  .comment-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;}
+  .comment-item.reply-item{margin-left:28px;background:var(--surface-2);}
+  .reply-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--accent);font-weight:800;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.3px;}
+  .comment-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;}
+  .comment-author{font-size:12.5px;font-weight:800;}
+  .comment-text{font-size:13px;color:var(--text);line-height:1.5;}
+  .comment-foot{display:flex;align-items:center;gap:12px;margin-top:6px;margin-left:32px;}
+  .comment-time{font-size:10.5px;color:var(--muted);}
+  .reply-btn{font-size:10.5px;color:var(--accent);font-weight:800;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;}
+
+  .chipset-list{display:flex;flex-direction:column;gap:12px;}
+  .chipset-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;gap:12px;cursor:pointer;}
+  .chipset-photo{width:60px;height:60px;border-radius:12px;object-fit:cover;background:var(--surface-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted);}
+  .chipset-info{flex:1;min-width:0;}
+  .chipset-name{font-size:14.5px;font-weight:800;}
+  .chipset-brand{font-size:11.5px;color:var(--accent);font-weight:800;margin-bottom:5px;text-transform:uppercase;}
+  .chipset-specs{font-size:12px;color:var(--muted);line-height:1.5;}
+
+  .setup-logo{width:64px;height:64px;border-radius:20px;background:transparent;margin:8px auto 18px;display:flex;align-items:center;justify-content:center;}
+  .setup-title{text-align:center;font-size:19px;font-weight:800;margin-bottom:6px;}
+  .setup-sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:24px;}
+
+  .profile-header{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+  .profile-avatar{width:80px;height:80px;border-radius:22px;object-fit:cover;background:var(--surface-2);flex-shrink:0;}
+  .profile-name{font-size:19px;font-weight:800;}
+  .profile-bio{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5;}
+  .profile-stats{display:flex;gap:18px;margin-top:10px;}
+  .profile-stat b{font-size:14px;}
+  .profile-stat span{font-size:11.5px;color:var(--muted);}
+  .profile-tabs{display:flex;gap:6px;margin:18px 0 14px;border-bottom:1px solid var(--border);}
+  .profile-tab{background:none;border:none;color:#fff;padding:10px 14px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-1px;opacity:0.65;}
+  .profile-tab.active{opacity:1;}
+  .profile-tab.active{color:var(--accent);border-color:var(--accent);}
+
+  .notif-list{display:flex;flex-direction:column;gap:8px;}
+  .notif-item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;}
+  .notif-item.unread{border-color:var(--accent);}
+  .notif-icon{width:36px;height:36px;border-radius:11px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent);}
+  .notif-text{font-size:13px;line-height:1.4;}
+  .notif-time{font-size:10.5px;color:var(--muted);margin-top:3px;}
+
+  nav.bottomnav{
+    position:fixed;bottom:14px;left:14px;right:14px;
+    background:rgba(19,19,19,0.7);backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid rgba(255,255,255,0.09);border-radius:22px;
+    display:flex;z-index:30;box-shadow:0 10px 30px rgba(0,0,0,0.5);padding:4px;
+  }
+  nav.bottomnav button{
+    flex:1;background:none;border:none;color:#fff;padding:10px 0 8px;border-radius:18px;
+    display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;opacity:0.65;
+  }
+  nav.bottomnav button.active{color:#fff;background:var(--accent);opacity:1;}
+
+  .toast{
+    position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:rgba(36,36,36,0.85);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.1);color:var(--text);
+    padding:12px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;
+    opacity:0;pointer-events:none;transition:all .25s ease;z-index:60;max-width:88vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .page-header h1{font-size:19px;margin:0;font-weight:800;}
+  .page-header .title-row{display:flex;align-items:center;gap:10px;}
+  .back-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .hint-text{font-size:12px;color:var(--muted);margin:-8px 2px 16px;}
+
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;}
+  .lightbox.show{display:flex;}
+  .lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:8px;}
+  .lightbox-close{position:absolute;top:20px;right:20px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;color:#fff;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="2" width="12" height="20" rx="3" stroke="white" stroke-width="1.8"/>
+        <line x1="6" y1="18" x2="18" y2="18" stroke="white" stroke-width="1.8"/>
+        <circle cx="12" cy="20" r="0.9" fill="white"/>
+      </svg>
+    </span>
+    Fiction Phone
+  </div>
+  <div class="header-actions">
+    <div style="position:relative;">
+      <button class="icon-btn" id="btnMoreTop" title="Buat Lainnya">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div id="moreMenu" class="glass" style="display:none;position:absolute;top:48px;right:0;border-radius:14px;padding:6px;min-width:172px;z-index:40;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <button class="more-menu-item" data-target="chipset">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/><line x1="9" y1="2" x2="9" y2="7" stroke="currentColor" stroke-width="1.8"/><line x1="15" y1="17" x2="15" y2="22" stroke="currentColor" stroke-width="1.8"/></svg>
+          Buat Chipset
+        </button>
+        <button class="more-menu-item" data-target="display">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.8"/><line x1="9" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Buat Layar
+        </button>
+        <button class="more-menu-item" data-target="os">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Buat OS
+        </button>
+        <button class="more-menu-item" data-target="lens">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+          Buat Lensa Kamera
+        </button>
+      </div>
+    </div>
+    <button class="icon-btn" id="btnNotifTop" title="Notifikasi">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3C9 3 7 5.2 7 8v3.5L5 15v1h14v-1l-2-3.5V8c0-2.8-2-5-5-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M10 19a2 2 0 004 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="badge-dot" id="notifBadge" style="display:none;">0</span>
+    </button>
+    <button class="avatar-btn" id="btnAvatarTop"></button>
+  </div>
+</header>
+
+<main>
+
+  <section class="view" id="view-setup">
+    <div class="setup-logo">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="2" width="12" height="20" rx="3" stroke="white" stroke-width="1.8"/><line x1="6" y1="18" x2="18" y2="18" stroke="white" stroke-width="1.8"/></svg>
+    </div>
+    <div class="setup-title">Selamat Datang!</div>
+    <div class="setup-sub">Isi nama & foto profil kamu buat mulai bikin karya</div>
+    <div class="form-card">
+      <div class="field">
+        <label>Foto Profil (opsional)</label>
+        <label class="upload-box" for="su_avatar">
+          <img id="su_avatar_preview" class="upload-preview round" style="display:none;">
+          <span class="upload-text" id="su_avatar_text">Pilih foto profil dari galeri</span>
+        </label>
+        <input type="file" id="su_avatar" accept="image/*">
+      </div>
+      <div class="field"><label>Nama Kamu</label><input type="text" id="su_name" placeholder="Contoh: Dimas"></div>
+      <button class="btn btn-primary btn-block" id="btnStartUsing">Mulai Pakai Fiction Phone</button>
+    </div>
+  </section>
+
+  <section class="view active" id="view-home">
+    <div class="page-header"><h1>Beranda</h1></div>
+
+    <div class="search-bar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><line x1="15.5" y1="15.5" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" placeholder="Cari nama, brand...">
+    </div>
+
+    <div class="main-tabs glass" id="mainTabs">
+      <button class="main-tab active" data-maintab="phones">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="2.5" width="10" height="19" rx="2.4" stroke="currentColor" stroke-width="2"/></svg> HP
+      </button>
+      <button class="main-tab" data-maintab="news">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="2"/><line x1="7" y1="9" x2="17" y2="9" stroke="currentColor" stroke-width="2"/></svg> Berita
+      </button>
+      <button class="main-tab" data-maintab="chipsets">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2"/><line x1="9" y1="2" x2="9" y2="7" stroke="currentColor" stroke-width="2"/><line x1="15" y1="17" x2="15" y2="22" stroke="currentColor" stroke-width="2"/></svg> Chipset
+      </button>
+      <button class="main-tab" data-maintab="displays">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="2"/><line x1="9" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12" y2="20" stroke="currentColor" stroke-width="2"/></svg> Layar
+      </button>
+      <button class="main-tab" data-maintab="oses">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> OS
+      </button>
+      <button class="main-tab" data-maintab="lenses">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg> Lensa
+      </button>
+    </div>
+
+    <div id="tabPhones">
+      <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-cat="all">Semua</button>
+        <button class="cat-tab" data-cat="entry">Entry Level</button>
+        <button class="cat-tab" data-cat="mid">Midrange</button>
+        <button class="cat-tab" data-cat="flagship">Flagship</button>
+      </div>
+      <div class="sort-row">
+        <div class="sort-tabs">
+          <button class="sort-tab active" data-sort="newest">Terbaru</button>
+          <button class="sort-tab" data-sort="popular">Terpopuler</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="btnCompareMode">⇄ Bandingkan</button>
+      </div>
+      <div id="homeContent"><div class="empty-state">Memuat data...</div></div>
+    </div>
+    <div id="tabNews" style="display:none;">
+      <div id="newsContent"><div class="empty-state">Memuat berita...</div></div>
+    </div>
+    <div id="tabChipsets" style="display:none;">
+      <div id="homeChipsetContent"><div class="empty-state">Memuat chipset...</div></div>
+    </div>
+    <div id="tabDisplays" style="display:none;">
+      <div id="homeDisplayContent"><div class="empty-state">Memuat layar...</div></div>
+    </div>
+    <div id="tabOses" style="display:none;">
+      <div id="homeOsContent"><div class="empty-state">Memuat sistem operasi...</div></div>
+    </div>
+    <div id="tabLenses" style="display:none;">
+      <div id="homeLensContent"><div class="empty-state">Memuat lensa kamera...</div></div>
+    </div>
+
+    <div style="text-align:center;margin-top:30px;padding-bottom:6px;">
+      <a href="#" id="linkAboutHome" style="font-size:12px;color:var(--muted);">Fiction Phone dibuat oleh <b style="color:var(--text);">Dimas by anox</b></a>
+      <br>
+      <a href="#" id="linkLeaderboard" style="font-size:12px;color:var(--accent);font-weight:700;">🏆 Lihat Leaderboard Kreator</a>
+    </div>
+  </section>
+
+  <div class="compare-bar" id="compareBar" style="display:none;">
+    <span id="compareBarText">Pilih 2 HP untuk dibandingkan</span>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" id="btnCancelCompareMode">Batal</button>
+      <button class="btn btn-primary btn-sm" id="btnDoCompare" disabled>Bandingkan</button>
+    </div>
+  </div>
+
+  <section class="view" id="view-compare">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromCompare">←</button><h1>Bandingkan HP</h1></div></div>
+    <div class="compare-grid" id="compareContent"></div>
+  </section>
+
+  <section class="view" id="view-leaderboard">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromLeaderboard">←</button><h1>Leaderboard Kreator</h1></div></div>
+    <div id="leaderboardContent"><div class="empty-state">Memuat leaderboard...</div></div>
+  </section>
+
+  <section class="view" id="view-create">
+    <div class="page-header"><h1>Buat HP Fiksi</h1></div>
+    <div class="hint-text" id="createAsHint">Dipublikasikan sebagai —</div>
+    <div class="form-card">
+      <div class="field"><label>Nama HP</label><input type="text" id="f_name" placeholder="Contoh: Nova X1"></div>
+      <div class="grid-2">
+        <div class="field"><label>Nama Brand</label><input type="text" id="f_brand" placeholder="Contoh: Novatech"></div>
+        <div class="field"><label>Harga</label><input type="text" id="f_price" placeholder="Contoh: Rp 8.000.000"></div>
+      </div>
+      <div class="field">
+        <label>Kategori</label>
+        <select id="f_category"><option value="entry">Entry Level</option><option value="mid">Midrange</option><option value="flagship">Flagship</option></select>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>RAM</label><input type="text" id="f_ram" placeholder="Contoh: 12GB"></div>
+        <div class="field"><label>Storage</label><input type="text" id="f_storage" placeholder="Contoh: 256GB"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Chipset</label>
+          <select id="f_chipset_select"><option value="">-- Pilih Chipset --</option><option value="__custom__">Lainnya (ketik manual)</option></select>
+          <input type="text" id="f_chipset" placeholder="Contoh: Nova Core X9" style="margin-top:8px;display:none;">
+        </div>
+        <div class="field"><label>Kamera</label><input type="text" id="f_camera" placeholder="Contoh: 108MP Triple Camera"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Baterai</label><input type="text" id="f_battery" placeholder="Contoh: 5000mAh"></div>
+        <div class="field"><label>Layar</label><input type="text" id="f_screen" placeholder="Contoh: 6.7&quot; AMOLED 120Hz"></div>
+      </div>
+      <div class="field"><label>Sistem Operasi</label><input type="text" id="f_os" placeholder="Contoh: NovaOS 4.0"></div>
+      <div class="field"><label>Deskripsi</label><textarea id="f_desc" placeholder="Ceritakan konsep HP fiksi kamu..."></textarea></div>
+      <div class="field">
+        <label>Foto HP (bisa pilih beberapa, maks 4)</label>
+        <label class="upload-box" for="f_photo"><span class="upload-text" id="f_photo_text">Pilih foto HP dari galeri</span></label>
+        <input type="file" id="f_photo" accept="image/*" multiple>
+        <div class="photo-gallery-preview" id="f_photo_gallery"></div>
+      </div>
+      <div class="field">
+        <label>Video HP (opsional)</label>
+        <label class="upload-box" for="f_video"><span class="upload-text" id="f_video_text">Pilih video dari galeri (maks 60MB)</span></label>
+        <input type="file" id="f_video" accept="video/*">
+        <video id="f_video_preview" class="video-preview" controls style="display:none;"></video>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelCreate">Batal</button>
+        <button class="btn btn-ghost" id="btnSaveDraft">Simpan Draft</button>
+        <button class="btn btn-primary" id="btnGoPreview">Lihat Preview</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-preview">
+    <div class="page-header"><h1>Preview</h1></div>
+    <div class="detail-photo"><img id="p_photo"></div>
+    <div class="detail-brand" id="p_brand"></div>
+    <div class="detail-name" id="p_name"></div>
+    <div class="detail-price" id="p_price"></div>
+    <p class="detail-desc" id="p_desc"></p>
+    <table class="spec-table">
+      <tr><td>Kategori</td><td id="p_category"></td></tr>
+      <tr><td>RAM</td><td id="p_ram"></td></tr>
+      <tr><td>Storage</td><td id="p_storage"></td></tr>
+      <tr><td>Chipset</td><td id="p_chipset"></td></tr>
+      <tr><td>Kamera</td><td id="p_camera"></td></tr>
+      <tr><td>Baterai</td><td id="p_battery"></td></tr>
+      <tr><td>Layar</td><td id="p_screen"></td></tr>
+      <tr><td>Sistem Operasi</td><td id="p_os"></td></tr>
+    </table>
+    <div class="form-actions">
+      <button class="btn btn-ghost" id="btnBackEdit">Edit Lagi</button>
+      <button class="btn btn-primary" id="btnPublish">Publikasikan</button>
+    </div>
+  </section>
+
+  <section class="view" id="view-news">
+    <div class="page-header"><h1>Buat Berita</h1></div>
+    <div class="hint-text" id="newsAsHint">Dipublikasikan sebagai —</div>
+    <div class="form-card">
+      <div class="field"><label>Judul Berita</label><input type="text" id="n_title" placeholder="Contoh: Novatech Umumkan Nova X1"></div>
+      <div class="field">
+        <label>Foto Berita</label>
+        <label class="upload-box" for="n_photo"><img id="n_photo_preview" class="upload-preview" style="display:none;width:80px;height:56px;"><span class="upload-text" id="n_photo_text">Pilih foto berita dari galeri</span></label>
+        <input type="file" id="n_photo" accept="image/*">
+      </div>
+      <div class="field">
+        <label>Video Berita (opsional)</label>
+        <label class="upload-box" for="n_video"><span class="upload-text" id="n_video_text">Pilih video dari galeri (maks 60MB)</span></label>
+        <input type="file" id="n_video" accept="video/*">
+        <video id="n_video_preview" class="video-preview" controls style="display:none;"></video>
+      </div>
+      <div class="field"><label>Isi Berita</label><textarea id="n_content" style="min-height:120px;" placeholder="Tulis isi berita di sini..."></textarea></div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelNews">Batal</button>
+        <button class="btn btn-primary" id="btnPublishNews">Publikasikan Berita</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-chipset">
+    <div class="page-header"><h1>Buat Chipset Fiksi</h1></div>
+    <div class="hint-text" id="chipsetAsHint">Dipublikasikan sebagai —</div>
+    <div class="form-card">
+      <div class="field"><label>Nama Chipset</label><input type="text" id="c_name" placeholder="Contoh: Nova Core X9"></div>
+      <div class="field"><label>Pabrikan</label><input type="text" id="c_brand" placeholder="Contoh: NovaSilicon"></div>
+      <div class="grid-2">
+        <div class="field"><label>Proses Fabrikasi</label><input type="text" id="c_fab" placeholder="Contoh: 3nm"></div>
+        <div class="field"><label>Jumlah Core</label><input type="text" id="c_cores" placeholder="Contoh: Octa-core"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Kecepatan Clock</label><input type="text" id="c_clock" placeholder="Contoh: 3.4 GHz"></div>
+        <div class="field"><label>GPU</label><input type="text" id="c_gpu" placeholder="Contoh: NovaGPU X2"></div>
+      </div>
+      <div class="field"><label>AI Engine</label><input type="text" id="c_ai" placeholder="Contoh: NovaAI 2.0 (40 TOPS)"></div>
+      <div class="field">
+        <label>Foto Chipset</label>
+        <label class="upload-box" for="c_photo"><img id="c_photo_preview" class="upload-preview" style="display:none;"><span class="upload-text" id="c_photo_text">Pilih foto chipset (opsional)</span></label>
+        <input type="file" id="c_photo" accept="image/*">
+      </div>
+      <div class="field"><label>Deskripsi</label><textarea id="c_desc" placeholder="Ceritakan keunggulan chipset ini..."></textarea></div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelChipset">Batal</button>
+        <button class="btn btn-primary" id="btnPublishChipset">Publikasikan Chipset</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-display">
+    <div class="page-header"><h1>Buat Layar Fiksi</h1></div>
+    <div class="hint-text" id="displayAsHint">Dipublikasikan sebagai —</div>
+    <div class="form-card">
+      <div class="field"><label>Nama Layar</label><input type="text" id="dp_name" placeholder="Contoh: NovaVision Pro"></div>
+      <div class="field"><label>Pabrikan</label><input type="text" id="dp_brand" placeholder="Contoh: NovaDisplay"></div>
+      <div class="grid-2">
+        <div class="field"><label>Tipe Panel</label><input type="text" id="dp_type" placeholder="Contoh: AMOLED"></div>
+        <div class="field"><label>Ukuran Layar</label><input type="text" id="dp_size" placeholder="Contoh: 6.7 inci"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Resolusi</label><input type="text" id="dp_resolution" placeholder="Contoh: 1440 x 3200"></div>
+        <div class="field"><label>Refresh Rate</label><input type="text" id="dp_refresh" placeholder="Contoh: 144Hz"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Kecerahan</label><input type="text" id="dp_brightness" placeholder="Contoh: 3000 nit"></div>
+        <div class="field"><label>Proteksi Layar</label><input type="text" id="dp_protection" placeholder="Contoh: Gorilla Glass Victus 3"></div>
+      </div>
+      <div class="field">
+        <label>Foto Layar</label>
+        <label class="upload-box" for="dp_photo"><img id="dp_photo_preview" class="upload-preview" style="display:none;"><span class="upload-text" id="dp_photo_text">Pilih foto layar (opsional)</span></label>
+        <input type="file" id="dp_photo" accept="image/*">
+      </div>
+      <div class="field"><label>Deskripsi</label><textarea id="dp_desc" placeholder="Ceritakan keunggulan layar ini..."></textarea></div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelDisplay">Batal</button>
+        <button class="btn btn-primary" id="btnPublishDisplay">Publikasikan Layar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-display-detail">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromDisplayDetail">←</button><h1>Detail Layar</h1></div></div>
+    <div class="detail-photo" id="dp_detail_photo_wrap" style="display:none;"><img id="dp_detail_photo"></div>
+    <div class="author-row" id="dp_authorRow" style="margin-bottom:12px;">
+      <img id="dp_avatar" class="avatar" style="display:none;">
+      <div class="avatar-fallback" id="dp_avatar_fallback"></div>
+      <span class="author-name" id="dp_creatorname"></span>
+    </div>
+    <div class="detail-brand" id="dp_detail_brand"></div>
+    <div class="detail-name" id="dp_detail_name"></div>
+    <p class="detail-desc" id="dp_detail_desc"></p>
+    <table class="spec-table">
+      <tr><td>Tipe Panel</td><td id="dp_detail_type"></td></tr>
+      <tr><td>Ukuran</td><td id="dp_detail_size"></td></tr>
+      <tr><td>Resolusi</td><td id="dp_detail_resolution"></td></tr>
+      <tr><td>Refresh Rate</td><td id="dp_detail_refresh"></td></tr>
+      <tr><td>Kecerahan</td><td id="dp_detail_brightness"></td></tr>
+      <tr><td>Proteksi</td><td id="dp_detail_protection"></td></tr>
+    </table>
+    <div class="form-actions" id="dp_ownerActions" style="display:none;">
+      <button class="btn btn-ghost" id="btnDeleteDisplay">Hapus</button>
+    </div>
+  </section>
+
+  <section class="view" id="view-os">
+    <div class="page-header"><h1>Buat Sistem Operasi</h1></div>
+    <div class="hint-text" id="osAsHint">Dipublikasikan sebagai —</div>
+    <div class="form-card">
+      <div class="field"><label>Nama OS</label><input type="text" id="os_name" placeholder="Contoh: NovaOS"></div>
+      <div class="field"><label>Pengembang</label><input type="text" id="os_dev" placeholder="Contoh: Novatech Software"></div>
+      <div class="grid-2">
+        <div class="field"><label>Versi</label><input type="text" id="os_version" placeholder="Contoh: 4.0"></div>
+        <div class="field"><label>Berbasis</label><input type="text" id="os_base" placeholder="Contoh: Android 15"></div>
+      </div>
+      <div class="field"><label>Fitur Utama</label><input type="text" id="os_features" placeholder="Contoh: AI Assistant, Mode Gaming, Multi-window"></div>
+      <div class="field">
+        <label>Foto/Screenshot OS</label>
+        <label class="upload-box" for="os_photo"><img id="os_photo_preview" class="upload-preview" style="display:none;"><span class="upload-text" id="os_photo_text">Pilih foto/screenshot (opsional)</span></label>
+        <input type="file" id="os_photo" accept="image/*">
+      </div>
+      <div class="field"><label>Deskripsi</label><textarea id="os_desc" placeholder="Ceritakan keunggulan sistem operasi ini..."></textarea></div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelOs">Batal</button>
+        <button class="btn btn-primary" id="btnPublishOs">Publikasikan OS</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-os-detail">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromOsDetail">←</button><h1>Detail Sistem Operasi</h1></div></div>
+    <div class="detail-photo" id="os_detail_photo_wrap" style="display:none;"><img id="os_detail_photo"></div>
+    <div class="author-row" id="os_authorRow" style="margin-bottom:12px;">
+      <img id="os_avatar" class="avatar" style="display:none;">
+      <div class="avatar-fallback" id="os_avatar_fallback"></div>
+      <span class="author-name" id="os_creatorname"></span>
+    </div>
+    <div class="detail-brand" id="os_detail_dev"></div>
+    <div class="detail-name" id="os_detail_name"></div>
+    <p class="detail-desc" id="os_detail_desc"></p>
+    <table class="spec-table">
+      <tr><td>Versi</td><td id="os_detail_version"></td></tr>
+      <tr><td>Berbasis</td><td id="os_detail_base"></td></tr>
+      <tr><td>Fitur Utama</td><td id="os_detail_features"></td></tr>
+    </table>
+    <div class="form-actions" id="os_ownerActions" style="display:none;">
+      <button class="btn btn-ghost" id="btnDeleteOs">Hapus</button>
+    </div>
+  </section>
+
+  <section class="view" id="view-lens">
+    <div class="page-header"><h1>Buat Lensa Kamera</h1></div>
+    <div class="hint-text" id="lensAsHint">Dipublikasikan sebagai —</div>
+    <div class="form-card">
+      <div class="field"><label>Nama Lensa</label><input type="text" id="ln_name" placeholder="Contoh: NovaLens Ultra"></div>
+      <div class="field"><label>Pabrikan</label><input type="text" id="ln_brand" placeholder="Contoh: NovaOptics"></div>
+      <div class="grid-2">
+        <div class="field"><label>Jenis Lensa</label><input type="text" id="ln_type" placeholder="Contoh: Ultrawide"></div>
+        <div class="field"><label>Megapixel</label><input type="text" id="ln_mp" placeholder="Contoh: 200MP"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Bukaan (Aperture)</label><input type="text" id="ln_aperture" placeholder="Contoh: f/1.6"></div>
+        <div class="field"><label>Zoom Optik</label><input type="text" id="ln_zoom" placeholder="Contoh: 5x Optical"></div>
+      </div>
+      <div class="field"><label>Stabilisasi</label><input type="text" id="ln_stabilization" placeholder="Contoh: OIS + EIS"></div>
+      <div class="field">
+        <label>Foto Lensa</label>
+        <label class="upload-box" for="ln_photo"><img id="ln_photo_preview" class="upload-preview" style="display:none;"><span class="upload-text" id="ln_photo_text">Pilih foto lensa (opsional)</span></label>
+        <input type="file" id="ln_photo" accept="image/*">
+      </div>
+      <div class="field"><label>Deskripsi</label><textarea id="ln_desc" placeholder="Ceritakan keunggulan lensa ini..."></textarea></div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" id="btnCancelLens">Batal</button>
+        <button class="btn btn-primary" id="btnPublishLens">Publikasikan Lensa</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-lens-detail">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromLensDetail">←</button><h1>Detail Lensa</h1></div></div>
+    <div class="detail-photo" id="ln_detail_photo_wrap" style="display:none;"><img id="ln_detail_photo"></div>
+    <div class="author-row" id="ln_authorRow" style="margin-bottom:12px;">
+      <img id="ln_avatar" class="avatar" style="display:none;">
+      <div class="avatar-fallback" id="ln_avatar_fallback"></div>
+      <span class="author-name" id="ln_creatorname"></span>
+    </div>
+    <div class="detail-brand" id="ln_detail_brand"></div>
+    <div class="detail-name" id="ln_detail_name"></div>
+    <p class="detail-desc" id="ln_detail_desc"></p>
+    <table class="spec-table">
+      <tr><td>Jenis Lensa</td><td id="ln_detail_type"></td></tr>
+      <tr><td>Megapixel</td><td id="ln_detail_mp"></td></tr>
+      <tr><td>Bukaan</td><td id="ln_detail_aperture"></td></tr>
+      <tr><td>Zoom Optik</td><td id="ln_detail_zoom"></td></tr>
+      <tr><td>Stabilisasi</td><td id="ln_detail_stabilization"></td></tr>
+    </table>
+    <div class="form-actions" id="ln_ownerActions" style="display:none;">
+      <button class="btn btn-ghost" id="btnDeleteLens">Hapus</button>
+    </div>
+  </section>
+
+  <section class="view" id="view-phone-detail">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromPhoneDetail">←</button><h1>Detail HP</h1></div></div>
+    <div class="detail-photo" id="d_photo_wrap"><img id="d_photo"><div class="zoom-hint"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="6.5" stroke="white" stroke-width="2"/><line x1="15" y1="15" x2="20" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="7" x2="10" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="10" x2="13" y2="10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div></div>
+    <div class="photo-thumbs" id="d_photoThumbs" style="display:none;"></div>
+    <video id="d_video" class="detail-video" controls style="display:none;"></video>
+    <div class="author-row" id="d_authorRow" style="margin-bottom:12px;">
+      <img id="d_avatar" class="avatar" style="display:none;">
+      <div class="avatar-fallback" id="d_avatar_fallback"></div>
+      <span class="author-name" id="d_creatorname"></span>
+    </div>
+    <div class="detail-brand" id="d_brand"></div>
+    <div class="detail-name" id="d_name"></div>
+    <div class="detail-price" id="d_price"></div>
+    <p class="detail-desc" id="d_desc"></p>
+
+    <div class="spec-group">
+      <div class="spec-group-title">Umum</div>
+      <table class="spec-table"><tr><td>Kategori</td><td id="d_category"></td></tr><tr><td>Sistem Operasi</td><td id="d_os"></td></tr></table>
+    </div>
+    <div class="spec-group">
+      <div class="spec-group-title">Layar</div>
+      <table class="spec-table"><tr><td>Layar</td><td id="d_screen"></td></tr></table>
+    </div>
+    <div class="spec-group">
+      <div class="spec-group-title">Performa</div>
+      <table class="spec-table"><tr><td>Chipset</td><td id="d_chipset"></td></tr><tr><td>RAM</td><td id="d_ram"></td></tr><tr><td>Storage</td><td id="d_storage"></td></tr></table>
+    </div>
+    <div class="spec-group">
+      <div class="spec-group-title">Kamera & Baterai</div>
+      <table class="spec-table"><tr><td>Kamera</td><td id="d_camera"></td></tr><tr><td>Baterai</td><td id="d_battery"></td></tr></table>
+    </div>
+
+    <div class="form-actions" id="d_ownerActions" style="display:none;margin-bottom:6px;">
+      <button class="btn btn-ghost" id="btnEditPhone">Edit</button>
+      <button class="btn btn-ghost" id="btnDeletePhone">Hapus</button>
+    </div>
+
+    <div class="action-row">
+      <button class="like-btn" id="d_likeBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20s-7-4.5-9.5-9C0.7 7.5 2 4 5.5 4c2 0 3.3 1 4.5 2.5C11.2 5 12.5 4 14.5 4 18 4 19.3 7.5 17.5 11c-2.5 4.5-9.5 9-9.5 9z" stroke="currentColor" stroke-width="1.8"/></svg><span id="d_likeCount">0</span></button>
+      <button class="like-btn" id="d_saveBtn" title="Simpan"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 3h12v18l-6-4-6 4V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+      <button class="share-btn" id="d_shareBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.8"/><line x1="8.2" y1="10.8" x2="15.8" y2="6.2" stroke="currentColor" stroke-width="1.8"/><line x1="8.2" y1="13.2" x2="15.8" y2="17.8" stroke="currentColor" stroke-width="1.8"/></svg></button>
+      <button class="share-btn" id="d_shareImgBtn" title="Bagikan sebagai gambar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><path d="M4 16l5-4 4 3 3-2.5 4 3.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+      <span class="comment-count" id="d_commentCount">0 komentar</span>
+    </div>
+
+    <div class="reply-banner" id="d_replyBanner">Membalas <b id="d_replyName"></b><span class="closeReply" id="d_replyClose">✕</span></div>
+    <div class="comment-form"><input type="text" id="d_commentInput" placeholder="Tulis komentar..."><button class="btn btn-primary" id="d_commentSend">Kirim</button></div>
+    <div class="comment-list" id="d_commentList"></div>
+  </section>
+
+  <section class="view" id="view-news-detail">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromNewsDetail">←</button><h1>Detail Berita</h1></div></div>
+    <div class="detail-photo wide" id="n_detail_photo_wrap" style="display:none;"><img id="n_detail_photo"><div class="zoom-hint"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="6.5" stroke="white" stroke-width="2"/><line x1="15" y1="15" x2="20" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div></div>
+    <video id="n_detail_video" class="detail-video" controls style="display:none;"></video>
+    <div class="author-row" id="n_authorRow" style="margin-bottom:12px;">
+      <img id="n_detail_avatar" class="avatar" style="display:none;">
+      <div class="avatar-fallback" id="n_detail_avatar_fallback"></div>
+      <span class="author-name" id="n_detail_author"></span>
+      <span class="news-time" id="n_detail_time" style="margin-left:auto;"></span>
+    </div>
+    <div class="detail-name" id="n_detail_title" style="margin-bottom:10px;"></div>
+    <p class="detail-desc" id="n_detail_content"></p>
+
+    <div class="form-actions" id="n_ownerActions" style="display:none;margin-bottom:6px;">
+      <button class="btn btn-ghost" id="btnEditNews">Edit</button>
+      <button class="btn btn-ghost" id="btnDeleteNews">Hapus</button>
+    </div>
+
+    <div class="action-row">
+      <button class="like-btn" id="n_likeBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20s-7-4.5-9.5-9C0.7 7.5 2 4 5.5 4c2 0 3.3 1 4.5 2.5C11.2 5 12.5 4 14.5 4 18 4 19.3 7.5 17.5 11c-2.5 4.5-9.5 9-9.5 9z" stroke="currentColor" stroke-width="1.8"/></svg><span id="n_likeCount">0</span></button>
+      <button class="share-btn" id="n_shareBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.8"/><line x1="8.2" y1="10.8" x2="15.8" y2="6.2" stroke="currentColor" stroke-width="1.8"/><line x1="8.2" y1="13.2" x2="15.8" y2="17.8" stroke="currentColor" stroke-width="1.8"/></svg>Share</button>
+      <span class="comment-count" id="n_commentCount">0 komentar</span>
+    </div>
+
+    <div class="reply-banner" id="n_replyBanner">Membalas <b id="n_replyName"></b><span class="closeReply" id="n_replyClose">✕</span></div>
+    <div class="comment-form"><input type="text" id="n_commentInput" placeholder="Tulis komentar..."><button class="btn btn-primary" id="n_commentSend">Kirim</button></div>
+    <div class="comment-list" id="n_commentList"></div>
+  </section>
+
+  <section class="view" id="view-chipset-detail">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromChipsetDetail">←</button><h1>Detail Chipset</h1></div></div>
+    <div class="detail-photo" id="ch_photo_wrap" style="display:none;"><img id="ch_photo"></div>
+    <div class="author-row" id="ch_authorRow" style="margin-bottom:12px;">
+      <img id="ch_avatar" class="avatar" style="display:none;">
+      <div class="avatar-fallback" id="ch_avatar_fallback"></div>
+      <span class="author-name" id="ch_creatorname"></span>
+    </div>
+    <div class="detail-brand" id="ch_brand"></div>
+    <div class="detail-name" id="ch_name"></div>
+    <p class="detail-desc" id="ch_desc"></p>
+    <table class="spec-table">
+      <tr><td>Fabrikasi</td><td id="ch_fab"></td></tr>
+      <tr><td>Jumlah Core</td><td id="ch_cores"></td></tr>
+      <tr><td>Kecepatan Clock</td><td id="ch_clock"></td></tr>
+      <tr><td>GPU</td><td id="ch_gpu"></td></tr>
+      <tr><td>AI Engine</td><td id="ch_ai"></td></tr>
+    </table>
+    <div class="form-actions" id="ch_ownerActions" style="display:none;">
+      <button class="btn btn-ghost" id="btnDeleteChipset">Hapus</button>
+    </div>
+  </section>
+
+  <section class="view" id="view-profile">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromProfile">←</button><h1>Profil</h1></div></div>
+    <div class="profile-header">
+      <img id="pf_avatar" class="profile-avatar" style="display:none;">
+      <div class="avatar-fallback lg" id="pf_avatar_fallback"></div>
+      <div>
+        <div class="profile-name" id="pf_name"></div>
+        <div class="profile-bio" id="pf_bio"></div>
+        <div class="profile-stats"><div class="profile-stat"><b id="pf_followers">0</b> <span>Pengikut</span></div><div class="profile-stat"><b id="pf_following">0</b> <span>Mengikuti</span></div></div>
+      </div>
+    </div>
+    <div class="form-actions" id="pf_actions" style="margin-top:6px;"></div>
+    <div class="profile-tabs">
+      <button class="profile-tab active" data-ptab="phones">HP</button>
+      <button class="profile-tab" data-ptab="news">Berita</button>
+      <button class="profile-tab" data-ptab="chipsets">Chipset</button>
+      <button class="profile-tab" data-ptab="displays">Layar</button>
+      <button class="profile-tab" data-ptab="oses">OS</button>
+      <button class="profile-tab" data-ptab="lenses">Lensa</button>
+      <button class="profile-tab" data-ptab="saved" id="ptab_saved" style="display:none;">Tersimpan</button>
+      <button class="profile-tab" data-ptab="drafts" id="ptab_drafts" style="display:none;">Draft</button>
+    </div>
+    <div id="profileContent"><div class="empty-state">Memuat...</div></div>
+    <div style="text-align:center;margin-top:26px;"><a href="#" id="linkAbout" style="font-size:12px;color:var(--muted);text-decoration:underline;">Tentang Fiction Phone</a></div>
+  </section>
+
+  <section class="view" id="view-edit-profile">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromEditProfile">←</button><h1>Edit Profil</h1></div></div>
+    <div class="form-card">
+      <div class="field">
+        <label>Foto Profil</label>
+        <label class="upload-box" for="ep_avatar"><img id="ep_avatar_preview" class="upload-preview round" style="display:none;"><span class="upload-text" id="ep_avatar_text">Ganti foto profil</span></label>
+        <input type="file" id="ep_avatar" accept="image/*">
+      </div>
+      <div class="field"><label>Nama</label><input type="text" id="ep_name" placeholder="Nama kamu"></div>
+      <div class="field"><label>Bio</label><textarea id="ep_bio" placeholder="Ceritakan sedikit tentang kamu..."></textarea></div>
+      <div class="form-actions"><button class="btn btn-primary btn-block" id="btnSaveProfile">Simpan Perubahan</button></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-notifications">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromNotif">←</button><h1>Notifikasi</h1></div></div>
+    <div class="notif-list" id="notifList"><div class="empty-state">Memuat notifikasi...</div></div>
+  </section>
+
+  <section class="view" id="view-about">
+    <div class="page-header"><div class="title-row"><button class="back-btn" id="btnBackFromAbout">←</button><h1>Tentang</h1></div></div>
+    <div class="form-card" style="text-align:center;padding:36px 18px;">
+      <div style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;font-weight:700;">D</div>
+      <div style="font-size:19px;font-weight:700;margin-bottom:6px;">Dimas by anox</div>
+      <div style="font-size:13px;color:var(--muted);">Pembuat & pengembang website Fiction Phone</div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="bottomnav">
+  <button class="navbtn active" data-view="home"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 11L12 4L20 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 9.5V19C6 19.5523 6.44772 20 7 20H10V15C10 14.4477 10.4477 14 11 14H13C13.5523 14 14 14.4477 14 15V20H17C17.5523 20 18 19.5523 18 19V9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Beranda</button>
+  <button class="navbtn" data-view="create"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="2.5" width="10" height="19" rx="2.4" stroke="currentColor" stroke-width="1.8"/><line x1="7" y1="17.2" x2="17" y2="17.2" stroke="currentColor" stroke-width="1.8"/></svg>Buat HP</button>
+  <button class="navbtn" data-view="news"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/><line x1="7" y1="8.2" x2="17" y2="8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="7" y1="11.5" x2="17" y2="11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Buat Berita</button>
+  <button class="navbtn" data-view="profile-self"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M5 20C5 16.5 8 14 12 14C16 14 19 16.5 19 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Profil</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+<div class="lightbox" id="lightbox"><div class="lightbox-close" id="lightboxClose">✕</div><img id="lightboxImg"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCFY8Tm7wgwiC3GehEW4Gp0oJosqT8vWok",
+  authDomain: "fictional-phone.firebaseapp.com",
+  projectId: "fictional-phone",
+  storageBucket: "fictional-phone.firebasestorage.app",
+  messagingSenderId: "909344745640",
+  appId: "1:909344745640:web:dd35a21f71572cdca3ba9d",
+  measurementId: "G-RLJJWR0W2T"
+};
+firebase.initializeApp(firebaseConfig);
+const fsdb = firebase.firestore();
+const fstorage = firebase.storage();
+
+const COL_PHONES = "phones", COL_NEWS = "news", COL_CHIPSETS = "chipsets", COL_COMMENTS = "comments", COL_DISPLAYS = "displays", COL_OSES = "oses", COL_LENSES = "lenses", COL_BOOKMARKS = "bookmarks", COL_COMMENT_LIKES = "commentLikes";
+const COL_USERS = "users", COL_FOLLOWS = "follows", COL_LIKES = "likes", COL_NOTIF = "notifications";
+
+function addItem(col, item){ return fsdb.collection(col).doc(item.id).set(item); }
+function escapeHtml(str){ const div = document.createElement("div"); div.textContent = str || ""; return div.innerHTML; }
+function formatTimeAgo(ts){
+  const diff = Date.now() - ts, min = Math.floor(diff/60000);
+  if(min < 1) return "Baru saja";
+  if(min < 60) return min + " menit lalu";
+  const hr = Math.floor(min/60); if(hr < 24) return hr + " jam lalu";
+  return Math.floor(hr/24) + " hari lalu";
+}
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+function personIconSvg(){ return `<svg width="50%" height="50%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.8"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`; }
+document.querySelectorAll(".avatar-fallback").forEach(el => el.innerHTML = personIconSvg());
+
+function compressImage(file, maxLongSide, quality){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        const longSide = Math.max(width, height);
+        if(longSide > maxLongSide){ const scale = maxLongSide/longSide; width = Math.round(width*scale); height = Math.round(height*scale); }
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = reject; img.src = e.target.result;
+    };
+    reader.onerror = reject; reader.readAsDataURL(file);
+  });
+}
+async function smartCompress(file){
+  let dataUrl = await compressImage(file, 1000, 0.75);
+  if(Math.round((dataUrl.length*3)/4) > 500*1024) dataUrl = await compressImage(file, 600, 0.65);
+  return dataUrl;
+}
+async function avatarCompress(file){ return await compressImage(file, 260, 0.75); }
+
+async function uploadVideo(file, idPrefix){
+  if(file.size > 60*1024*1024) throw new Error("Video maksimal 60MB");
+  const ref = fstorage.ref().child("videos/" + idPrefix + "_" + Date.now() + "_" + file.name.replace(/[^a-zA-Z0-9._-]/g,""));
+  await ref.put(file);
+  return await ref.getDownloadURL();
+}
+
+function getIdentity(){
+  try{ return JSON.parse(localStorage.getItem("fp_identity")); }catch(e){ return null; }
+}
+function saveIdentity(identity){ localStorage.setItem("fp_identity", JSON.stringify(identity)); }
+let identity = getIdentity();
+
+function requireIdentity(actionLabel){
+  if(!identity){
+    showToast("Isi nama dulu untuk " + actionLabel);
+    showView("setup");
+    return false;
+  }
+  return true;
+}
+
+function applyIdentityToHeader(){
+  const avatarBtn = document.getElementById("btnAvatarTop");
+  if(identity){
+    if(identity.avatar) avatarBtn.innerHTML = `<img src="${identity.avatar}">`;
+    else avatarBtn.textContent = (identity.name || "U").charAt(0).toUpperCase();
+    ["createAsHint","newsAsHint","chipsetAsHint","displayAsHint","osAsHint","lensAsHint"].forEach(id => {
+      document.getElementById(id).textContent = "Dipublikasikan sebagai " + identity.name;
+    });
+    listenNotifBadge();
+  } else {
+    avatarBtn.innerHTML = personIconSvg();
+  }
+}
+applyIdentityToHeader();
+
+let setupAvatarDraft = null;
+document.getElementById("su_avatar").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  document.getElementById("su_avatar_text").textContent = "Mengompres foto...";
+  const compressed = await avatarCompress(file);
+  setupAvatarDraft = compressed;
+  const prev = document.getElementById("su_avatar_preview");
+  prev.src = compressed; prev.style.display = "block";
+  document.getElementById("su_avatar_text").textContent = "Foto terpilih ✓";
+});
+document.getElementById("btnStartUsing").addEventListener("click", async () => {
+  const name = document.getElementById("su_name").value.trim();
+  if(!name){ showToast("Isi nama kamu dulu"); return; }
+  const id = "user_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
+  identity = { id, name, avatar: setupAvatarDraft };
+  saveIdentity(identity);
+  try{
+    await fsdb.collection(COL_USERS).doc(id).set({ uid:id, name, bio:"", avatar: setupAvatarDraft, followers:0, following:0, createdAt: Date.now() });
+  }catch(err){ console.error(err); }
+  applyIdentityToHeader();
+  showToast("Selamat datang, " + name + "!");
+  showView("home");
+  if(pendingHashOpen) handleDeepLink();
+});
+
+function showView(name){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById("view-" + name).classList.add("active");
+  document.querySelectorAll(".navbtn").forEach(b => b.classList.toggle("active", b.dataset.view === name));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".navbtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const v = btn.dataset.view;
+    if(v === "profile-self"){ if(!requireIdentity("melihat profil")) return; openProfile(identity.id); return; }
+    if((v === "create" || v === "news") && !requireIdentity("membuat postingan")) return;
+    showView(v);
+  });
+});
+document.getElementById("btnMoreTop").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const menu = document.getElementById("moreMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+});
+document.addEventListener("click", (e) => {
+  const menu = document.getElementById("moreMenu");
+  if(menu.style.display === "block" && !menu.contains(e.target) && e.target.id !== "btnMoreTop") menu.style.display = "none";
+});
+document.querySelectorAll(".more-menu-item").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.getElementById("moreMenu").style.display = "none";
+    const target = btn.dataset.target;
+    const labels = { chipset:"membuat chipset", display:"membuat layar", os:"membuat OS", lens:"membuat lensa kamera" };
+    if(!requireIdentity(labels[target])) return;
+    showView(target);
+  });
+});
+document.getElementById("btnNotifTop").addEventListener("click", () => { if(!requireIdentity("melihat notifikasi")) return; showView("notifications"); loadNotifications(); });
+document.getElementById("btnAvatarTop").addEventListener("click", () => { if(!identity){ showView("setup"); return; } openProfile(identity.id); });
+document.getElementById("btnCancelCreate").addEventListener("click", () => { editingPhoneId = null; resetPhoneForm(); showView("home"); });
+document.getElementById("btnBackEdit").addEventListener("click", () => showView("create"));
+document.getElementById("btnCancelNews").addEventListener("click", () => { editingNewsId = null; resetNewsForm(); showView("home"); });
+document.getElementById("btnCancelChipset").addEventListener("click", () => showView("home"));
+document.getElementById("btnCancelDisplay").addEventListener("click", () => showView("home"));
+document.getElementById("btnCancelOs").addEventListener("click", () => showView("home"));
+document.getElementById("btnCancelLens").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromPhoneDetail").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromNewsDetail").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromChipsetDetail").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromDisplayDetail").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromOsDetail").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromLensDetail").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromProfile").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromEditProfile").addEventListener("click", () => openProfile(identity.id));
+document.getElementById("btnBackFromNotif").addEventListener("click", () => showView("home"));
+document.getElementById("btnBackFromAbout").addEventListener("click", () => showView("home"));
+document.getElementById("linkAbout").addEventListener("click", (e) => { e.preventDefault(); showView("about"); });
+document.getElementById("linkAboutHome").addEventListener("click", (e) => { e.preventDefault(); showView("about"); });
+
+document.querySelectorAll(".main-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    currentMainTab = tab.dataset.maintab;
+    document.querySelectorAll(".main-tab").forEach(t => t.classList.toggle("active", t === tab));
+    document.getElementById("tabPhones").style.display = currentMainTab === "phones" ? "block" : "none";
+    document.getElementById("tabNews").style.display = currentMainTab === "news" ? "block" : "none";
+    document.getElementById("tabChipsets").style.display = currentMainTab === "chipsets" ? "block" : "none";
+    document.getElementById("tabDisplays").style.display = currentMainTab === "displays" ? "block" : "none";
+    document.getElementById("tabOses").style.display = currentMainTab === "oses" ? "block" : "none";
+    document.getElementById("tabLenses").style.display = currentMainTab === "lenses" ? "block" : "none";
+  });
+});
+
+function openLightbox(src){
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightbox").classList.add("show");
+}
+document.getElementById("lightboxClose").addEventListener("click", () => document.getElementById("lightbox").classList.remove("show"));
+document.getElementById("lightbox").addEventListener("click", (e) => { if(e.target.id === "lightbox") document.getElementById("lightbox").classList.remove("show"); });
+document.getElementById("d_photo_wrap").addEventListener("click", () => {
+  if(!currentDetailPhone) return;
+  const photos = (currentDetailPhone.photos && currentDetailPhone.photos.length) ? currentDetailPhone.photos : [currentDetailPhone.photo];
+  openLightbox(photos[currentGalleryIndex] || photos[0]);
+});
+document.getElementById("n_detail_photo_wrap").addEventListener("click", () => { if(currentDetailNews && currentDetailNews.photo) openLightbox(currentDetailNews.photo); });
+
+let draft = { name:"", brand:"", price:"", category:"entry", ram:"", storage:"", chipset:"", camera:"", battery:"", screen:"", os:"", desc:"", photo:null, photos:[], videoFile:null };
+let newsDraft = { title:"", content:"", photo:null, videoFile:null };
+let chipsetDraft = { photo:null };
+let displayDraft = { photo:null };
+let osDraft = { photo:null };
+let lensDraft = { photo:null };
+let editProfileDraft = { avatar:null };
+let currentFilter = "all";
+let currentMainTab = "phones";
+let currentProfileTab = "phones";
+let allPhonesCache = [], allNewsCache = [], allChipsetsCache = [], allDisplaysCache = [], allOsesCache = [], allLensesCache = [];
+let currentDetailPhone = null, currentDetailNews = null, currentDetailChipset = null, currentDetailDisplay = null, currentDetailOs = null, currentDetailLens = null;
+let editingPhoneId = null, editingNewsId = null;
+let searchQuery = "";
+let currentSort = "newest";
+let compareMode = false;
+let compareSelection = [];
+let photoGalleryDraft = [];
+let currentGalleryIndex = 0;
+let currentProfileUid = null;
+let unsubComments = null;
+let pendingHashOpen = location.hash || "";
+let replyingTo = null;
+
+document.getElementById("f_chipset_select").addEventListener("change", (e) => {
+  const val = e.target.value, customInput = document.getElementById("f_chipset");
+  if(val === "__custom__"){ customInput.style.display = "block"; customInput.value = ""; customInput.focus(); }
+  else { customInput.style.display = "none"; customInput.value = val; }
+});
+function populateChipsetSelect(){
+  const select = document.getElementById("f_chipset_select"), currentVal = select.value;
+  select.innerHTML = `<option value="">-- Pilih Chipset --</option>` +
+    allChipsetsCache.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} (${escapeHtml(c.brand)})</option>`).join("") +
+    `<option value="__custom__">Lainnya (ketik manual)</option>`;
+  if(Array.from(select.options).some(o => o.value === currentVal)) select.value = currentVal;
+}
+
+document.getElementById("f_photo").addEventListener("change", async (e) => {
+  const files = Array.from(e.target.files).slice(0, 4 - photoGalleryDraft.length);
+  if(files.length === 0) return;
+  document.getElementById("f_photo_text").textContent = "Mengompres foto...";
+  for(const file of files){
+    const compressed = await smartCompress(file);
+    photoGalleryDraft.push(compressed);
+  }
+  draft.photos = photoGalleryDraft;
+  draft.photo = photoGalleryDraft[0] || null;
+  renderPhotoGalleryPreview();
+  document.getElementById("f_photo_text").textContent = photoGalleryDraft.length + " foto terpilih ✓";
+  e.target.value = "";
+});
+function renderPhotoGalleryPreview(){
+  const container = document.getElementById("f_photo_gallery");
+  container.innerHTML = photoGalleryDraft.map((src, i) => `
+    <div class="thumb-wrap">
+      <img src="${src}">
+      <div class="remove-thumb" data-idx="${i}">✕</div>
+    </div>
+  `).join("");
+  container.querySelectorAll(".remove-thumb").forEach(el => {
+    el.addEventListener("click", () => {
+      photoGalleryDraft.splice(parseInt(el.dataset.idx), 1);
+      draft.photos = photoGalleryDraft;
+      draft.photo = photoGalleryDraft[0] || null;
+      renderPhotoGalleryPreview();
+      document.getElementById("f_photo_text").textContent = photoGalleryDraft.length > 0 ? photoGalleryDraft.length + " foto terpilih ✓" : "Pilih foto HP dari galeri";
+    });
+  });
+}
+document.getElementById("f_video").addEventListener("change", (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size > 60*1024*1024){ showToast("Video maksimal 60MB"); e.target.value = ""; return; }
+  draft.videoFile = file;
+  const prev = document.getElementById("f_video_preview");
+  prev.src = URL.createObjectURL(file); prev.style.display = "block";
+  document.getElementById("f_video_text").textContent = "Video terpilih ✓ (" + file.name + ")";
+});
+document.getElementById("n_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  document.getElementById("n_photo_text").textContent = "Mengompres foto...";
+  const compressed = await smartCompress(file);
+  newsDraft.photo = compressed;
+  const prev = document.getElementById("n_photo_preview");
+  prev.src = compressed; prev.style.display = "block";
+  document.getElementById("n_photo_text").textContent = "Foto berita terpilih ✓";
+});
+document.getElementById("n_video").addEventListener("change", (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size > 60*1024*1024){ showToast("Video maksimal 60MB"); e.target.value = ""; return; }
+  newsDraft.videoFile = file;
+  const prev = document.getElementById("n_video_preview");
+  prev.src = URL.createObjectURL(file); prev.style.display = "block";
+  document.getElementById("n_video_text").textContent = "Video terpilih ✓ (" + file.name + ")";
+});
+document.getElementById("c_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  document.getElementById("c_photo_text").textContent = "Mengompres foto...";
+  const compressed = await avatarCompress(file);
+  chipsetDraft.photo = compressed;
+  const prev = document.getElementById("c_photo_preview");
+  prev.src = compressed; prev.style.display = "block";
+  document.getElementById("c_photo_text").textContent = "Foto chipset terpilih ✓";
+});
+document.getElementById("dp_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  document.getElementById("dp_photo_text").textContent = "Mengompres foto...";
+  const compressed = await smartCompress(file);
+  displayDraft.photo = compressed;
+  const prev = document.getElementById("dp_photo_preview");
+  prev.src = compressed; prev.style.display = "block";
+  document.getElementById("dp_photo_text").textContent = "Foto layar terpilih ✓";
+});
+document.getElementById("os_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  document.getElementById("os_photo_text").textContent = "Mengompres foto...";
+  const compressed = await smartCompress(file);
+  osDraft.photo = compressed;
+  const prev = document.getElementById("os_photo_preview");
+  prev.src = compressed; prev.style.display = "block";
+  document.getElementById("os_photo_text").textContent = "Foto OS terpilih ✓";
+});
+document.getElementById("ln_photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  document.getElementById("ln_photo_text").textContent = "Mengompres foto...";
+  const compressed = await smartCompress(file);
+  lensDraft.photo = compressed;
+  const prev = document.getElementById("ln_photo_preview");
+  prev.src = compressed; prev.style.display = "block";
+  document.getElementById("ln_photo_text").textContent = "Foto lensa terpilih ✓";
+});
+document.getElementById("ep_avatar").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if(!file) return;
+  document.getElementById("ep_avatar_text").textContent = "Mengompres foto...";
+  const compressed = await avatarCompress(file);
+  editProfileDraft.avatar = compressed;
+  const prev = document.getElementById("ep_avatar_preview");
+  prev.src = compressed; prev.style.display = "block";
+  document.getElementById("ep_avatar_text").textContent = "Foto profil terpilih ✓";
+});
+
+function readPhoneFormIntoDraft(){
+  draft.name = document.getElementById("f_name").value.trim();
+  draft.brand = document.getElementById("f_brand").value.trim();
+  draft.price = document.getElementById("f_price").value.trim();
+  draft.category = document.getElementById("f_category").value;
+  draft.ram = document.getElementById("f_ram").value.trim();
+  draft.storage = document.getElementById("f_storage").value.trim();
+  draft.chipset = document.getElementById("f_chipset").value.trim();
+  draft.camera = document.getElementById("f_camera").value.trim();
+  draft.battery = document.getElementById("f_battery").value.trim();
+  draft.screen = document.getElementById("f_screen").value.trim();
+  draft.os = document.getElementById("f_os").value.trim();
+  draft.desc = document.getElementById("f_desc").value.trim();
+  draft.photos = photoGalleryDraft;
+  draft.photo = photoGalleryDraft[0] || null;
+}
+
+document.getElementById("btnSaveDraft").addEventListener("click", async () => {
+  if(!requireIdentity("menyimpan draft")) return;
+  readPhoneFormIntoDraft();
+  if(!draft.name){ showToast("Isi minimal nama HP untuk menyimpan draft"); return; }
+  const id = editingPhoneId || ("phone_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
+  try{
+    showToast("Menyimpan draft...");
+    const phone = {
+      id, createdAt: Date.now(), authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+      name: draft.name, brand: draft.brand, price: draft.price, category: draft.category,
+      ram: draft.ram, storage: draft.storage, chipset: draft.chipset, camera: draft.camera,
+      battery: draft.battery, screen: draft.screen, os: draft.os, desc: draft.desc,
+      photo: draft.photo, photos: draft.photos, videoUrl: null, likes: 0, status: "draft"
+    };
+    await addItem(COL_PHONES, phone);
+    showToast("Draft tersimpan! Lanjutkan kapan saja dari profil kamu.");
+    resetPhoneForm();
+    showView("home");
+  }catch(err){ console.error(err); showToast("Gagal menyimpan draft, cek koneksi internet"); }
+});
+
+document.getElementById("btnGoPreview").addEventListener("click", () => {
+  readPhoneFormIntoDraft();
+  if(!draft.name || !draft.brand){ showToast("Nama HP dan Brand wajib diisi"); return; }
+  if(!draft.photo){ showToast("Pilih foto HP terlebih dahulu"); return; }
+  const CATEGORY_LABELS = { entry:"Entry Level", mid:"Midrange", flagship:"Flagship" };
+  document.getElementById("p_photo").src = draft.photo;
+  document.getElementById("p_brand").textContent = draft.brand;
+  document.getElementById("p_name").textContent = draft.name;
+  document.getElementById("p_price").textContent = draft.price;
+  document.getElementById("p_desc").textContent = draft.desc;
+  document.getElementById("p_category").textContent = CATEGORY_LABELS[draft.category];
+  document.getElementById("p_ram").textContent = draft.ram || "-";
+  document.getElementById("p_storage").textContent = draft.storage || "-";
+  document.getElementById("p_chipset").textContent = draft.chipset || "-";
+  document.getElementById("p_camera").textContent = draft.camera || "-";
+  document.getElementById("p_battery").textContent = draft.battery || "-";
+  document.getElementById("p_screen").textContent = draft.screen || "-";
+  document.getElementById("p_os").textContent = draft.os || "-";
+  showView("preview");
+});
+
+document.getElementById("btnPublish").addEventListener("click", async () => {
+  if(!requireIdentity("mempublikasikan HP")) return;
+  const isEdit = !!editingPhoneId;
+  const id = isEdit ? editingPhoneId : ("phone_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
+  try{
+    showToast(isEdit ? "Menyimpan perubahan..." : "Mengunggah HP...");
+    let videoUrl = null;
+    if(draft.videoFile) videoUrl = await uploadVideo(draft.videoFile, id);
+
+    if(isEdit){
+      const original = allPhonesCache.find(x => x.id === editingPhoneId) || {};
+      const phone = {
+        ...original,
+        name: draft.name, brand: draft.brand, price: draft.price, category: draft.category,
+        ram: draft.ram, storage: draft.storage, chipset: draft.chipset, camera: draft.camera,
+        battery: draft.battery, screen: draft.screen, os: draft.os, desc: draft.desc,
+        photo: draft.photo, photos: draft.photos, videoUrl: videoUrl || original.videoUrl || null,
+        status: "published"
+      };
+      await addItem(COL_PHONES, phone);
+      showToast("HP berhasil diperbarui!");
+    } else {
+      const phone = {
+        id, createdAt: Date.now(), authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+        name: draft.name, brand: draft.brand, price: draft.price, category: draft.category,
+        ram: draft.ram, storage: draft.storage, chipset: draft.chipset, camera: draft.camera,
+        battery: draft.battery, screen: draft.screen, os: draft.os, desc: draft.desc,
+        photo: draft.photo, photos: draft.photos, videoUrl, likes: 0, status: "published"
+      };
+      await addItem(COL_PHONES, phone);
+      showToast("HP berhasil dipublikasikan!");
+    }
+    resetPhoneForm();
+    currentFilter = "all";
+    document.querySelectorAll(".cat-tab").forEach(t => t.classList.toggle("active", t.dataset.cat === "all"));
+    showView("home");
+  }catch(err){ console.error(err); showToast("Gagal: " + (err.message || "cek koneksi internet")); }
+});
+function resetPhoneForm(){
+  draft = { name:"", brand:"", price:"", category:"entry", ram:"", storage:"", chipset:"", camera:"", battery:"", screen:"", os:"", desc:"", photo:null, photos:[], videoFile:null };
+  editingPhoneId = null;
+  photoGalleryDraft = [];
+  document.querySelectorAll("#view-create input[type=text], #view-create textarea").forEach(el => el.value = "");
+  document.getElementById("f_category").value = "entry";
+  document.getElementById("f_photo_gallery").innerHTML = "";
+  document.getElementById("f_photo_text").textContent = "Pilih foto HP dari galeri";
+  document.getElementById("f_photo").value = "";
+  document.getElementById("f_video_preview").style.display = "none";
+  document.getElementById("f_video_text").textContent = "Pilih video dari galeri (maks 60MB)";
+  document.getElementById("f_video").value = "";
+  document.getElementById("f_chipset_select").value = "";
+  document.getElementById("f_chipset").style.display = "none";
+}
+
+document.getElementById("btnPublishNews").addEventListener("click", async () => {
+  if(!requireIdentity("mempublikasikan berita")) return;
+  newsDraft.title = document.getElementById("n_title").value.trim();
+  newsDraft.content = document.getElementById("n_content").value.trim();
+  if(!newsDraft.title || !newsDraft.content){ showToast("Judul dan isi berita wajib diisi"); return; }
+  const isEdit = !!editingNewsId;
+  const id = isEdit ? editingNewsId : ("news_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
+  try{
+    showToast(isEdit ? "Menyimpan perubahan..." : "Mengunggah berita...");
+    let videoUrl = null;
+    if(newsDraft.videoFile) videoUrl = await uploadVideo(newsDraft.videoFile, id);
+
+    if(isEdit){
+      const original = allNewsCache.find(x => x.id === editingNewsId) || {};
+      const news = { ...original, title: newsDraft.title, content: newsDraft.content, photo: newsDraft.photo, videoUrl: videoUrl || original.videoUrl || null };
+      await addItem(COL_NEWS, news);
+      showToast("Berita berhasil diperbarui!");
+    } else {
+      const news = {
+        id, createdAt: Date.now(), authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+        title: newsDraft.title, content: newsDraft.content, photo: newsDraft.photo, videoUrl, likes: 0
+      };
+      await addItem(COL_NEWS, news);
+      showToast("Berita berhasil dipublikasikan!");
+    }
+    resetNewsForm();
+    showView("home");
+  }catch(err){ console.error(err); showToast("Gagal: " + (err.message || "cek koneksi internet")); }
+});
+function resetNewsForm(){
+  newsDraft = { title:"", content:"", photo:null, videoFile:null };
+  editingNewsId = null;
+  document.getElementById("n_title").value = "";
+  document.getElementById("n_content").value = "";
+  document.getElementById("n_photo_preview").style.display = "none";
+  document.getElementById("n_photo_text").textContent = "Pilih foto berita dari galeri";
+  document.getElementById("n_photo").value = "";
+  document.getElementById("n_video_preview").style.display = "none";
+  document.getElementById("n_video_text").textContent = "Pilih video dari galeri (maks 60MB)";
+  document.getElementById("n_video").value = "";
+}
+
+document.getElementById("btnPublishChipset").addEventListener("click", async () => {
+  if(!requireIdentity("mempublikasikan chipset")) return;
+  const name = document.getElementById("c_name").value.trim();
+  const brand = document.getElementById("c_brand").value.trim();
+  if(!name || !brand){ showToast("Nama chipset dan pabrikan wajib diisi"); return; }
+  const chipset = {
+    id: "chipset_" + Date.now() + "_" + Math.random().toString(36).slice(2,8), createdAt: Date.now(),
+    authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+    name, brand,
+    fab: document.getElementById("c_fab").value.trim(),
+    cores: document.getElementById("c_cores").value.trim(),
+    clock: document.getElementById("c_clock").value.trim(),
+    gpu: document.getElementById("c_gpu").value.trim(),
+    ai: document.getElementById("c_ai").value.trim(),
+    desc: document.getElementById("c_desc").value.trim(),
+    photo: chipsetDraft.photo
+  };
+  try{
+    showToast("Mengunggah chipset...");
+    await addItem(COL_CHIPSETS, chipset);
+    showToast("Chipset berhasil dipublikasikan!");
+    resetChipsetForm();
+    showView("home");
+  }catch(err){ console.error(err); showToast("Gagal menyimpan chipset, cek koneksi internet"); }
+});
+function resetChipsetForm(){
+  ["c_name","c_brand","c_fab","c_cores","c_clock","c_gpu","c_ai","c_desc"].forEach(id => document.getElementById(id).value = "");
+  chipsetDraft = { photo:null };
+  document.getElementById("c_photo_preview").style.display = "none";
+  document.getElementById("c_photo_text").textContent = "Pilih foto chipset (opsional)";
+  document.getElementById("c_photo").value = "";
+}
+function chipIconSvg(){ return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><line x1="9" y1="2" x2="9" y2="7" stroke="currentColor" stroke-width="1.6"/><line x1="15" y1="17" x2="15" y2="22" stroke="currentColor" stroke-width="1.6"/></svg>`; }
+function chipsetCardHtml(c){
+  const a = getAuthorInfo(c);
+  return `
+    <div class="chipset-card" data-chipsetid="${c.id}">
+      ${c.photo ? `<img src="${c.photo}" class="chipset-photo">` : `<div class="chipset-photo">${chipIconSvg()}</div>`}
+      <div class="chipset-info">
+        <div class="chipset-brand">${escapeHtml(c.brand)}</div>
+        <div class="chipset-name">${escapeHtml(c.name)}</div>
+        <div class="chipset-specs">${c.fab ? `Fabrikasi: ${escapeHtml(c.fab)} · ` : ""}${c.cores ? `${escapeHtml(c.cores)} · ` : ""}${c.clock ? escapeHtml(c.clock) : ""}</div>
+      </div>
+    </div>`;
+}
+function renderChipsetListInto(elId, chipsetsFull){
+  const container = document.getElementById(elId);
+  let chipsets = chipsetsFull.slice();
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    chipsets = chipsets.filter(c => (c.name||"").toLowerCase().includes(q) || (c.brand||"").toLowerCase().includes(q));
+  }
+  if(chipsets.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada chipset yang cocok.</div>`; return; }
+  container.innerHTML = `<div class="chipset-list">${chipsets.map(chipsetCardHtml).join("")}</div>`;
+  container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => openChipsetDetail(el.dataset.chipsetid)));
+}
+function openChipsetDetail(id){
+  const c = allChipsetsCache.find(x => x.id === id);
+  if(!c) return;
+  currentDetailChipset = c;
+  const a = getAuthorInfo(c);
+  const wrap = document.getElementById("ch_photo_wrap");
+  if(c.photo){ document.getElementById("ch_photo").src = c.photo; wrap.style.display = "block"; } else { wrap.style.display = "none"; }
+  document.getElementById("ch_brand").textContent = c.brand;
+  document.getElementById("ch_name").textContent = c.name;
+  document.getElementById("ch_desc").textContent = c.desc || "";
+  document.getElementById("ch_fab").textContent = c.fab || "-";
+  document.getElementById("ch_cores").textContent = c.cores || "-";
+  document.getElementById("ch_clock").textContent = c.clock || "-";
+  document.getElementById("ch_gpu").textContent = c.gpu || "-";
+  document.getElementById("ch_ai").textContent = c.ai || "-";
+  document.getElementById("ch_creatorname").textContent = a.name;
+  const av = document.getElementById("ch_avatar"), avFb = document.getElementById("ch_avatar_fallback");
+  if(a.avatar){ av.src = a.avatar; av.style.display = "block"; avFb.style.display = "none"; } else { av.style.display = "none"; avFb.style.display = "flex"; avFb.innerHTML = personIconSvg(); }
+  document.getElementById("ch_authorRow").onclick = () => { if(a.id) openProfile(a.id); };
+  document.getElementById("ch_ownerActions").style.display = (identity && a.id === identity.id) ? "flex" : "none";
+  showView("chipset-detail");
+}
+
+document.getElementById("btnPublishDisplay").addEventListener("click", async () => {
+  if(!requireIdentity("mempublikasikan layar")) return;
+  const name = document.getElementById("dp_name").value.trim();
+  const brand = document.getElementById("dp_brand").value.trim();
+  if(!name || !brand){ showToast("Nama layar dan pabrikan wajib diisi"); return; }
+  const display = {
+    id: "display_" + Date.now() + "_" + Math.random().toString(36).slice(2,8), createdAt: Date.now(),
+    authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+    name, brand,
+    type: document.getElementById("dp_type").value.trim(),
+    size: document.getElementById("dp_size").value.trim(),
+    resolution: document.getElementById("dp_resolution").value.trim(),
+    refresh: document.getElementById("dp_refresh").value.trim(),
+    brightness: document.getElementById("dp_brightness").value.trim(),
+    protection: document.getElementById("dp_protection").value.trim(),
+    desc: document.getElementById("dp_desc").value.trim(),
+    photo: displayDraft.photo
+  };
+  try{
+    showToast("Mengunggah layar...");
+    await addItem(COL_DISPLAYS, display);
+    showToast("Layar berhasil dipublikasikan!");
+    resetDisplayForm();
+    showView("home");
+  }catch(err){ console.error(err); showToast("Gagal menyimpan layar, cek koneksi internet"); }
+});
+function resetDisplayForm(){
+  ["dp_name","dp_brand","dp_type","dp_size","dp_resolution","dp_refresh","dp_brightness","dp_protection","dp_desc"].forEach(id => document.getElementById(id).value = "");
+  displayDraft = { photo:null };
+  document.getElementById("dp_photo_preview").style.display = "none";
+  document.getElementById("dp_photo_text").textContent = "Pilih foto layar (opsional)";
+  document.getElementById("dp_photo").value = "";
+}
+function displayIconSvg(){ return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.6"/><line x1="9" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`; }
+function displayCardHtml(d){
+  const a = getAuthorInfo(d);
+  return `
+    <div class="chipset-card" data-displayid="${d.id}">
+      ${d.photo ? `<img src="${d.photo}" class="chipset-photo">` : `<div class="chipset-photo">${displayIconSvg()}</div>`}
+      <div class="chipset-info">
+        <div class="chipset-brand">${escapeHtml(d.brand)}</div>
+        <div class="chipset-name">${escapeHtml(d.name)}</div>
+        <div class="chipset-specs">${d.type ? `${escapeHtml(d.type)} · ` : ""}${d.size ? `${escapeHtml(d.size)} · ` : ""}${d.refresh ? escapeHtml(d.refresh) : ""}</div>
+      </div>
+    </div>`;
+}
+function renderDisplayListInto(elId, displaysFull){
+  const container = document.getElementById(elId);
+  let displays = displaysFull.slice();
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    displays = displays.filter(d => (d.name||"").toLowerCase().includes(q) || (d.brand||"").toLowerCase().includes(q));
+  }
+  if(displays.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada layar yang cocok.</div>`; return; }
+  container.innerHTML = `<div class="chipset-list">${displays.map(displayCardHtml).join("")}</div>`;
+  container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => openDisplayDetail(el.dataset.displayid)));
+}
+function openDisplayDetail(id){
+  const d = allDisplaysCache.find(x => x.id === id);
+  if(!d) return;
+  currentDetailDisplay = d;
+  const a = getAuthorInfo(d);
+  const wrap = document.getElementById("dp_detail_photo_wrap");
+  if(d.photo){ document.getElementById("dp_detail_photo").src = d.photo; wrap.style.display = "block"; } else { wrap.style.display = "none"; }
+  document.getElementById("dp_detail_brand").textContent = d.brand;
+  document.getElementById("dp_detail_name").textContent = d.name;
+  document.getElementById("dp_detail_desc").textContent = d.desc || "";
+  document.getElementById("dp_detail_type").textContent = d.type || "-";
+  document.getElementById("dp_detail_size").textContent = d.size || "-";
+  document.getElementById("dp_detail_resolution").textContent = d.resolution || "-";
+  document.getElementById("dp_detail_refresh").textContent = d.refresh || "-";
+  document.getElementById("dp_detail_brightness").textContent = d.brightness || "-";
+  document.getElementById("dp_detail_protection").textContent = d.protection || "-";
+  document.getElementById("dp_creatorname").textContent = a.name;
+  const av = document.getElementById("dp_avatar"), avFb = document.getElementById("dp_avatar_fallback");
+  if(a.avatar){ av.src = a.avatar; av.style.display = "block"; avFb.style.display = "none"; } else { av.style.display = "none"; avFb.style.display = "flex"; avFb.innerHTML = personIconSvg(); }
+  document.getElementById("dp_authorRow").onclick = () => { if(a.id) openProfile(a.id); };
+  document.getElementById("dp_ownerActions").style.display = (identity && a.id === identity.id) ? "flex" : "none";
+  showView("display-detail");
+}
+
+document.getElementById("btnPublishOs").addEventListener("click", async () => {
+  if(!requireIdentity("mempublikasikan sistem operasi")) return;
+  const name = document.getElementById("os_name").value.trim();
+  const dev = document.getElementById("os_dev").value.trim();
+  if(!name || !dev){ showToast("Nama OS dan Pengembang wajib diisi"); return; }
+  const os = {
+    id: "os_" + Date.now() + "_" + Math.random().toString(36).slice(2,8), createdAt: Date.now(),
+    authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+    name, dev,
+    version: document.getElementById("os_version").value.trim(),
+    base: document.getElementById("os_base").value.trim(),
+    features: document.getElementById("os_features").value.trim(),
+    desc: document.getElementById("os_desc").value.trim(),
+    photo: osDraft.photo
+  };
+  try{
+    showToast("Mengunggah OS...");
+    await addItem(COL_OSES, os);
+    showToast("Sistem operasi berhasil dipublikasikan!");
+    resetOsForm();
+    showView("home");
+  }catch(err){ console.error(err); showToast("Gagal menyimpan OS, cek koneksi internet"); }
+});
+function resetOsForm(){
+  ["os_name","os_dev","os_version","os_base","os_features","os_desc"].forEach(id => document.getElementById(id).value = "");
+  osDraft = { photo:null };
+  document.getElementById("os_photo_preview").style.display = "none";
+  document.getElementById("os_photo_text").textContent = "Pilih foto/screenshot (opsional)";
+  document.getElementById("os_photo").value = "";
+}
+function osIconSvg(){ return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`; }
+function osCardHtml(o){
+  const a = getAuthorInfo(o);
+  return `
+    <div class="chipset-card" data-osid="${o.id}">
+      ${o.photo ? `<img src="${o.photo}" class="chipset-photo">` : `<div class="chipset-photo">${osIconSvg()}</div>`}
+      <div class="chipset-info">
+        <div class="chipset-brand">${escapeHtml(o.dev)}</div>
+        <div class="chipset-name">${escapeHtml(o.name)}</div>
+        <div class="chipset-specs">${o.version ? `Versi ${escapeHtml(o.version)} · ` : ""}${o.base ? escapeHtml(o.base) : ""}</div>
+      </div>
+    </div>`;
+}
+function renderOsListInto(elId, osesFull){
+  const container = document.getElementById(elId);
+  let oses = osesFull.slice();
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    oses = oses.filter(o => (o.name||"").toLowerCase().includes(q) || (o.dev||"").toLowerCase().includes(q));
+  }
+  if(oses.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada sistem operasi yang cocok.</div>`; return; }
+  container.innerHTML = `<div class="chipset-list">${oses.map(osCardHtml).join("")}</div>`;
+  container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => openOsDetail(el.dataset.osid)));
+}
+function openOsDetail(id){
+  const o = allOsesCache.find(x => x.id === id);
+  if(!o) return;
+  currentDetailOs = o;
+  const a = getAuthorInfo(o);
+  const wrap = document.getElementById("os_detail_photo_wrap");
+  if(o.photo){ document.getElementById("os_detail_photo").src = o.photo; wrap.style.display = "block"; } else { wrap.style.display = "none"; }
+  document.getElementById("os_detail_dev").textContent = o.dev;
+  document.getElementById("os_detail_name").textContent = o.name;
+  document.getElementById("os_detail_desc").textContent = o.desc || "";
+  document.getElementById("os_detail_version").textContent = o.version || "-";
+  document.getElementById("os_detail_base").textContent = o.base || "-";
+  document.getElementById("os_detail_features").textContent = o.features || "-";
+  document.getElementById("os_creatorname").textContent = a.name;
+  const av = document.getElementById("os_avatar"), avFb = document.getElementById("os_avatar_fallback");
+  if(a.avatar){ av.src = a.avatar; av.style.display = "block"; avFb.style.display = "none"; } else { av.style.display = "none"; avFb.style.display = "flex"; avFb.innerHTML = personIconSvg(); }
+  document.getElementById("os_authorRow").onclick = () => { if(a.id) openProfile(a.id); };
+  document.getElementById("os_ownerActions").style.display = (identity && a.id === identity.id) ? "flex" : "none";
+  showView("os-detail");
+}
+document.getElementById("btnDeleteOs").addEventListener("click", () => {
+  if(currentDetailOs) confirmDelete(COL_OSES, currentDetailOs.id, "Sistem operasi berhasil dihapus");
+});
+
+document.getElementById("btnPublishLens").addEventListener("click", async () => {
+  if(!requireIdentity("mempublikasikan lensa kamera")) return;
+  const name = document.getElementById("ln_name").value.trim();
+  const brand = document.getElementById("ln_brand").value.trim();
+  if(!name || !brand){ showToast("Nama lensa dan pabrikan wajib diisi"); return; }
+  const lens = {
+    id: "lens_" + Date.now() + "_" + Math.random().toString(36).slice(2,8), createdAt: Date.now(),
+    authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+    name, brand,
+    type: document.getElementById("ln_type").value.trim(),
+    mp: document.getElementById("ln_mp").value.trim(),
+    aperture: document.getElementById("ln_aperture").value.trim(),
+    zoom: document.getElementById("ln_zoom").value.trim(),
+    stabilization: document.getElementById("ln_stabilization").value.trim(),
+    desc: document.getElementById("ln_desc").value.trim(),
+    photo: lensDraft.photo
+  };
+  try{
+    showToast("Mengunggah lensa...");
+    await addItem(COL_LENSES, lens);
+    showToast("Lensa berhasil dipublikasikan!");
+    resetLensForm();
+    showView("home");
+  }catch(err){ console.error(err); showToast("Gagal menyimpan lensa, cek koneksi internet"); }
+});
+function resetLensForm(){
+  ["ln_name","ln_brand","ln_type","ln_mp","ln_aperture","ln_zoom","ln_stabilization","ln_desc"].forEach(id => document.getElementById(id).value = "");
+  lensDraft = { photo:null };
+  document.getElementById("ln_photo_preview").style.display = "none";
+  document.getElementById("ln_photo_text").textContent = "Pilih foto lensa (opsional)";
+  document.getElementById("ln_photo").value = "";
+}
+function lensIconSvg(){ return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>`; }
+function lensCardHtml(l){
+  const a = getAuthorInfo(l);
+  return `
+    <div class="chipset-card" data-lensid="${l.id}">
+      ${l.photo ? `<img src="${l.photo}" class="chipset-photo">` : `<div class="chipset-photo">${lensIconSvg()}</div>`}
+      <div class="chipset-info">
+        <div class="chipset-brand">${escapeHtml(l.brand)}</div>
+        <div class="chipset-name">${escapeHtml(l.name)}</div>
+        <div class="chipset-specs">${l.type ? `${escapeHtml(l.type)} · ` : ""}${l.mp ? `${escapeHtml(l.mp)} · ` : ""}${l.aperture ? escapeHtml(l.aperture) : ""}</div>
+      </div>
+    </div>`;
+}
+function renderLensListInto(elId, lensesFull){
+  const container = document.getElementById(elId);
+  let lenses = lensesFull.slice();
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    lenses = lenses.filter(l => (l.name||"").toLowerCase().includes(q) || (l.brand||"").toLowerCase().includes(q));
+  }
+  if(lenses.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada lensa kamera yang cocok.</div>`; return; }
+  container.innerHTML = `<div class="chipset-list">${lenses.map(lensCardHtml).join("")}</div>`;
+  container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => openLensDetail(el.dataset.lensid)));
+}
+function openLensDetail(id){
+  const l = allLensesCache.find(x => x.id === id);
+  if(!l) return;
+  currentDetailLens = l;
+  const a = getAuthorInfo(l);
+  const wrap = document.getElementById("ln_detail_photo_wrap");
+  if(l.photo){ document.getElementById("ln_detail_photo").src = l.photo; wrap.style.display = "block"; } else { wrap.style.display = "none"; }
+  document.getElementById("ln_detail_brand").textContent = l.brand;
+  document.getElementById("ln_detail_name").textContent = l.name;
+  document.getElementById("ln_detail_desc").textContent = l.desc || "";
+  document.getElementById("ln_detail_type").textContent = l.type || "-";
+  document.getElementById("ln_detail_mp").textContent = l.mp || "-";
+  document.getElementById("ln_detail_aperture").textContent = l.aperture || "-";
+  document.getElementById("ln_detail_zoom").textContent = l.zoom || "-";
+  document.getElementById("ln_detail_stabilization").textContent = l.stabilization || "-";
+  document.getElementById("ln_creatorname").textContent = a.name;
+  const av = document.getElementById("ln_avatar"), avFb = document.getElementById("ln_avatar_fallback");
+  if(a.avatar){ av.src = a.avatar; av.style.display = "block"; avFb.style.display = "none"; } else { av.style.display = "none"; avFb.style.display = "flex"; avFb.innerHTML = personIconSvg(); }
+  document.getElementById("ln_authorRow").onclick = () => { if(a.id) openProfile(a.id); };
+  document.getElementById("ln_ownerActions").style.display = (identity && a.id === identity.id) ? "flex" : "none";
+  showView("lens-detail");
+}
+document.getElementById("btnDeleteLens").addEventListener("click", () => {
+  if(currentDetailLens) confirmDelete(COL_LENSES, currentDetailLens.id, "Lensa berhasil dihapus");
+});
+
+/* ================= Hapus & Edit Postingan Sendiri ================= */
+function confirmDelete(colName, id, successMsg){
+  if(!confirm("Yakin mau hapus postingan ini? Tindakan ini tidak bisa dibatalkan.")) return;
+  fsdb.collection(colName).doc(id).delete()
+    .then(() => { showToast(successMsg); showView("home"); })
+    .catch((err) => { console.error(err); showToast("Gagal menghapus, cek koneksi internet"); });
+}
+document.getElementById("btnDeletePhone").addEventListener("click", () => {
+  if(currentDetailPhone) confirmDelete(COL_PHONES, currentDetailPhone.id, "HP berhasil dihapus");
+});
+document.getElementById("btnDeleteNews").addEventListener("click", () => {
+  if(currentDetailNews) confirmDelete(COL_NEWS, currentDetailNews.id, "Berita berhasil dihapus");
+});
+document.getElementById("btnDeleteChipset").addEventListener("click", () => {
+  if(currentDetailChipset) confirmDelete(COL_CHIPSETS, currentDetailChipset.id, "Chipset berhasil dihapus");
+});
+document.getElementById("btnDeleteDisplay").addEventListener("click", () => {
+  if(currentDetailDisplay) confirmDelete(COL_DISPLAYS, currentDetailDisplay.id, "Layar berhasil dihapus");
+});
+
+document.getElementById("btnEditPhone").addEventListener("click", () => {
+  if(!currentDetailPhone) return;
+  const p = currentDetailPhone;
+  editingPhoneId = p.id;
+  photoGalleryDraft = p.photos && p.photos.length ? p.photos.slice() : (p.photo ? [p.photo] : []);
+  draft = { name:p.name, brand:p.brand, price:p.price, category:p.category, ram:p.ram, storage:p.storage, chipset:p.chipset, camera:p.camera, battery:p.battery, screen:p.screen, os:p.os, desc:p.desc, photo:p.photo, photos:photoGalleryDraft, videoFile:null };
+  document.getElementById("f_name").value = p.name;
+  document.getElementById("f_brand").value = p.brand;
+  document.getElementById("f_price").value = p.price;
+  document.getElementById("f_category").value = p.category;
+  document.getElementById("f_ram").value = p.ram;
+  document.getElementById("f_storage").value = p.storage;
+  document.getElementById("f_chipset").value = p.chipset;
+  document.getElementById("f_chipset").style.display = "block";
+  document.getElementById("f_chipset_select").value = "__custom__";
+  document.getElementById("f_camera").value = p.camera;
+  document.getElementById("f_battery").value = p.battery;
+  document.getElementById("f_screen").value = p.screen;
+  document.getElementById("f_os").value = p.os;
+  document.getElementById("f_desc").value = p.desc;
+  renderPhotoGalleryPreview();
+  document.getElementById("f_photo_text").textContent = photoGalleryDraft.length + " foto terpilih ✓";
+  showView("create");
+});
+document.getElementById("btnEditNews").addEventListener("click", () => {
+  if(!currentDetailNews) return;
+  const n = currentDetailNews;
+  editingNewsId = n.id;
+  newsDraft = { title:n.title, content:n.content, photo:n.photo, videoFile:null };
+  document.getElementById("n_title").value = n.title;
+  document.getElementById("n_content").value = n.content;
+  if(n.photo){
+    document.getElementById("n_photo_preview").src = n.photo;
+    document.getElementById("n_photo_preview").style.display = "block";
+    document.getElementById("n_photo_text").textContent = "Foto berita terpilih ✓ (tidak diubah)";
+  }
+  showView("news");
+});
+
+document.querySelectorAll(".cat-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    currentFilter = tab.dataset.cat;
+    document.querySelectorAll(".cat-tab").forEach(t => t.classList.toggle("active", t === tab));
+    renderPhoneGrid();
+  });
+});
+
+/* ================= Search ================= */
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  searchQuery = e.target.value.trim();
+  renderPhoneGrid();
+  renderNewsList(allNewsCache);
+  renderChipsetListInto("homeChipsetContent", allChipsetsCache);
+  renderDisplayListInto("homeDisplayContent", allDisplaysCache);
+  renderOsListInto("homeOsContent", allOsesCache);
+  renderLensListInto("homeLensContent", allLensesCache);
+});
+
+/* ================= Sort ================= */
+document.querySelectorAll(".sort-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    currentSort = tab.dataset.sort;
+    document.querySelectorAll(".sort-tab").forEach(t => t.classList.toggle("active", t === tab));
+    renderPhoneGrid();
+  });
+});
+
+/* ================= Bandingkan HP ================= */
+document.getElementById("btnCompareMode").addEventListener("click", () => {
+  compareMode = true;
+  compareSelection = [];
+  document.getElementById("compareBar").style.display = "flex";
+  updateCompareBar();
+  renderPhoneGrid();
+});
+document.getElementById("btnCancelCompareMode").addEventListener("click", () => {
+  compareMode = false;
+  compareSelection = [];
+  document.getElementById("compareBar").style.display = "none";
+  renderPhoneGrid();
+});
+function toggleCompareSelect(id){
+  const idx = compareSelection.indexOf(id);
+  if(idx > -1) compareSelection.splice(idx, 1);
+  else {
+    if(compareSelection.length >= 2){ showToast("Maksimal pilih 2 HP"); return; }
+    compareSelection.push(id);
+  }
+  updateCompareBar();
+  renderPhoneGrid();
+}
+function updateCompareBar(){
+  document.getElementById("compareBarText").textContent = compareSelection.length === 2 ? "2 HP dipilih, siap dibandingkan!" : `Pilih HP untuk dibandingkan (${compareSelection.length}/2)`;
+  document.getElementById("btnDoCompare").disabled = compareSelection.length !== 2;
+}
+function extractNumber(str){
+  if(!str) return null;
+  const match = String(str).match(/[\d.,]+/);
+  if(!match) return null;
+  const num = parseFloat(match[0].replace(/,/g,""));
+  return isNaN(num) ? null : num;
+}
+document.getElementById("btnDoCompare").addEventListener("click", () => {
+  const p1 = allPhonesCache.find(x => x.id === compareSelection[0]);
+  const p2 = allPhonesCache.find(x => x.id === compareSelection[1]);
+  if(!p1 || !p2) return;
+  const rows = [
+    ["Harga","price"],["Kategori","category"],["RAM","ram"],["Storage","storage"],
+    ["Chipset","chipset"],["Kamera","camera"],["Baterai","battery"],["Layar","screen"],["Sistem Operasi","os"]
+  ];
+  const numericKeys = ["ram","storage","battery"];
+  const numData = {};
+  numericKeys.forEach(key => {
+    const v1 = extractNumber(p1[key]);
+    const v2 = extractNumber(p2[key]);
+    numData[key] = { v1, v2 };
+  });
+
+  function col(p, otherKeyPrefix){
+    return `
+      <div class="compare-col">
+        <img src="${p.photo}">
+        <div class="cname">${escapeHtml(p.name)}</div>
+        ${rows.map(([label,key]) => {
+          const rawVal = key === "category" ? (CATEGORY_LABELS[p[key]]||"-") : (p[key]||"-");
+          if(!numericKeys.includes(key)) {
+            return `<div class="compare-row"><span class="lbl">${label}</span>${escapeHtml(rawVal)}</div>`;
+          }
+          const { v1, v2 } = numData[key];
+          const myVal = otherKeyPrefix === "p1" ? v1 : v2;
+          const otherVal = otherKeyPrefix === "p1" ? v2 : v1;
+          if(myVal === null || otherVal === null || (myVal === 0 && otherVal === 0)){
+            return `<div class="compare-row"><span class="lbl">${label}</span>${escapeHtml(rawVal)}</div>`;
+          }
+          const max = Math.max(myVal, otherVal) || 1;
+          const pct = Math.round((myVal / max) * 100);
+          const isWinner = myVal > otherVal;
+          const isTie = myVal === otherVal;
+          let badge = "";
+          if(!isTie && otherVal > 0){
+            const diffPct = Math.round(((myVal - otherVal) / otherVal) * 100);
+            if(isWinner) badge = `<span class="compare-badge win">+${diffPct}%</span>`;
+          } else if(isTie){
+            badge = `<span class="compare-badge tie">Sama</span>`;
+          }
+          return `
+            <div class="compare-row">
+              <span class="lbl">${label}</span>
+              <span>${escapeHtml(rawVal)} ${badge}</span>
+              <div class="compare-bar-track"><div class="compare-bar-fill ${isWinner ? 'win' : ''}" style="width:${pct}%"></div></div>
+            </div>`;
+        }).join("")}
+      </div>`;
+  }
+  document.getElementById("compareContent").innerHTML = col(p1, "p1") + col(p2, "p2");
+  compareMode = false;
+  compareSelection = [];
+  document.getElementById("compareBar").style.display = "none";
+  showView("compare");
+});
+document.getElementById("btnBackFromCompare").addEventListener("click", () => showView("home"));
+
+/* ================= Leaderboard ================= */
+document.getElementById("linkLeaderboard").addEventListener("click", async (e) => {
+  e.preventDefault();
+  showView("leaderboard");
+  const listEl = document.getElementById("leaderboardContent");
+  listEl.innerHTML = `<div class="empty-state">Memuat leaderboard...</div>`;
+  try{
+    const snapshot = await fsdb.collection(COL_USERS).orderBy("followers","desc").limit(20).get();
+    const users = snapshot.docs.map(d => d.data());
+    if(users.length === 0){ listEl.innerHTML = `<div class="empty-state">Belum ada data.</div>`; return; }
+    listEl.innerHTML = users.map((u, i) => `
+      <div class="lb-item" data-uid="${u.uid}">
+        <div class="lb-rank">${i+1}</div>
+        ${u.avatar ? `<img src="${u.avatar}" class="avatar">` : `<div class="avatar-fallback">${personIconSvg()}</div>`}
+        <div class="lb-name">${escapeHtml(u.name)}</div>
+        <div class="lb-stat">${u.followers||0} pengikut</div>
+      </div>
+    `).join("");
+    listEl.querySelectorAll(".lb-item").forEach(el => el.addEventListener("click", () => openProfile(el.dataset.uid)));
+  }catch(err){ console.error(err); listEl.innerHTML = `<div class="empty-state">⚠️ Gagal memuat leaderboard.</div>`; }
+});
+document.getElementById("btnBackFromLeaderboard").addEventListener("click", () => showView("home"));
+
+function getAuthorInfo(item){
+  return { id: item.authorId || null, name: item.authorName || item.creatorName || item.author || "Anonim", avatar: item.authorAvatar || item.avatar || null };
+}
+
+function renderNewsList(newsFull){
+  const container = document.getElementById("newsContent");
+  let news = newsFull.slice();
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    news = news.filter(n => (n.title||"").toLowerCase().includes(q));
+  }
+  if(news.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada berita yang cocok.</div>`; return; }
+  container.innerHTML = `<div class="news-list">${news.map(n => {
+    const a = getAuthorInfo(n);
+    return `
+    <div class="news-card" data-newsid="${n.id}">
+      ${n.photo ? `<div class="news-photo"><img src="${n.photo}"></div>` : ``}
+      <div class="news-body">
+        <div class="news-title">${escapeHtml(n.title)}</div>
+        <div class="news-content">${escapeHtml(n.content)}</div>
+        <div class="news-meta">
+          ${a.avatar ? `<img src="${a.avatar}" class="avatar">` : `<div class="avatar-fallback">${personIconSvg()}</div>`}
+          <span class="author-name">${escapeHtml(a.name)}</span>
+          <span class="news-time">${formatTimeAgo(n.createdAt)}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+  container.querySelectorAll(".news-card").forEach(el => el.addEventListener("click", () => openNewsDetail(el.dataset.newsid)));
+}
+
+const CATEGORY_LABELS = { entry:"Entry Level", mid:"Midrange", flagship:"Flagship" };
+function videoIconSvg(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="10,8 16,12 10,16" fill="white"/></svg>`; }
+function renderPhoneGrid(){
+  const container = document.getElementById("homeContent");
+  let phones = allPhonesCache.slice();
+  if(currentFilter !== "all") phones = phones.filter(p => p.category === currentFilter);
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    phones = phones.filter(p => (p.name||"").toLowerCase().includes(q) || (p.brand||"").toLowerCase().includes(q));
+  }
+  if(currentSort === "popular") phones.sort((a,b) => (b.likes||0) - (a.likes||0));
+  else phones.sort((a,b) => b.createdAt - a.createdAt);
+  if(phones.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada HP yang cocok.</div>`; return; }
+  container.innerHTML = `<div class="phone-grid">${phones.map(p => {
+    const a = getAuthorInfo(p);
+    const isSelected = compareSelection.includes(p.id);
+    return `
+    <div class="phone-card ${isSelected ? 'compare-selected' : ''}" data-phoneid="${p.id}">
+      <div class="phone-photo-wrap">
+        <span class="cat-badge">${CATEGORY_LABELS[p.category] || "Entry Level"}</span>
+        ${p.videoUrl ? `<span class="video-badge">${videoIconSvg()}</span>` : ""}
+        <img src="${p.photo}" alt="${escapeHtml(p.name)}">
+      </div>
+      <div class="phone-body">
+        <div class="phone-brand">${escapeHtml(p.brand)}</div>
+        <div class="phone-name">${escapeHtml(p.name)}</div>
+        <div class="phone-price">${escapeHtml(p.price)}</div>
+        <div class="phone-desc">${escapeHtml(p.desc)}</div>
+        <div class="card-footer author-row">
+          ${a.avatar ? `<img src="${a.avatar}" class="avatar">` : `<div class="avatar-fallback">${personIconSvg()}</div>`}
+          <span class="author-name">${escapeHtml(a.name)}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+  container.querySelectorAll(".phone-card").forEach(el => el.addEventListener("click", () => {
+    if(compareMode){ toggleCompareSelect(el.dataset.phoneid); return; }
+    openPhoneDetail(el.dataset.phoneid);
+  }));
+}
+
+async function isLiked(itemType, itemId){
+  if(!identity) return false;
+  const doc = await fsdb.collection(COL_LIKES).doc(identity.id + "_" + itemType + "_" + itemId).get();
+  return doc.exists;
+}
+async function toggleLike(itemType, itemId, colName, ownerUid){
+  if(!requireIdentity("nge-like")) return null;
+  const likeId = identity.id + "_" + itemType + "_" + itemId;
+  const likeRef = fsdb.collection(COL_LIKES).doc(likeId);
+  const itemRef = fsdb.collection(colName).doc(itemId);
+  const doc = await likeRef.get();
+  if(doc.exists){
+    await likeRef.delete();
+    await itemRef.update({ likes: firebase.firestore.FieldValue.increment(-1) });
+    return false;
+  } else {
+    await likeRef.set({ uid: identity.id, itemType, itemId, createdAt: Date.now() });
+    await itemRef.update({ likes: firebase.firestore.FieldValue.increment(1) });
+    if(ownerUid && ownerUid !== identity.id) createNotification(ownerUid, "like", itemType, itemId);
+    return true;
+  }
+}
+
+function addComment(parentType, parentId, ownerUid, text, parentCommentId, replyToName){
+  const comment = {
+    id: "cmt_" + Date.now() + "_" + Math.random().toString(36).slice(2,8),
+    parentType, parentId, parentCommentId: parentCommentId || null, replyToName: replyToName || null,
+    authorId: identity.id, authorName: identity.name, authorAvatar: identity.avatar,
+    text, createdAt: Date.now(), likes: 0
+  };
+  if(ownerUid && ownerUid !== identity.id) createNotification(ownerUid, "comment", parentType, parentId);
+  return fsdb.collection(COL_COMMENTS).doc(comment.id).set(comment);
+}
+function commentItemHtml(c, isReply){
+  const a = getAuthorInfo({authorId:c.authorId, authorName:c.authorName, authorAvatar:c.authorAvatar});
+  return `
+    <div class="comment-item ${isReply ? 'reply-item' : ''}" data-cid="${c.id}">
+      ${isReply && c.replyToName ? `<div class="reply-tag">↳ Balasan untuk ${escapeHtml(c.replyToName)}</div>` : ""}
+      <div class="comment-head" data-uid="${a.id || ''}">
+        ${a.avatar ? `<img src="${a.avatar}" class="avatar">` : `<div class="avatar-fallback">${personIconSvg()}</div>`}
+        <span class="comment-author">${escapeHtml(a.name)}</span>
+      </div>
+      <div class="comment-text">${escapeHtml(c.text)}</div>
+      <div class="comment-foot">
+        <span class="comment-time">${formatTimeAgo(c.createdAt)}</span>
+        <button class="comment-like-btn" data-cmtlike="${c.id}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20s-7-4.5-9.5-9C0.7 7.5 2 4 5.5 4c2 0 3.3 1 4.5 2.5C11.2 5 12.5 4 14.5 4 18 4 19.3 7.5 17.5 11c-2.5 4.5-9.5 9-9.5 9z" stroke="currentColor" stroke-width="1.8"/></svg>
+          <span>${c.likes || 0}</span>
+        </button>
+        <button class="reply-btn" data-replyid="${c.id}" data-replyname="${escapeHtml(a.name)}">Balas</button>
+      </div>
+    </div>`;
+}
+async function isCommentLiked(commentId){
+  if(!identity) return false;
+  const doc = await fsdb.collection(COL_COMMENT_LIKES).doc(identity.id + "_" + commentId).get();
+  return doc.exists;
+}
+async function toggleCommentLike(commentId){
+  if(!requireIdentity("nge-like komentar")) return null;
+  const ref = fsdb.collection(COL_COMMENT_LIKES).doc(identity.id + "_" + commentId);
+  const cmtRef = fsdb.collection(COL_COMMENTS).doc(commentId);
+  const doc = await ref.get();
+  if(doc.exists){
+    await ref.delete();
+    await cmtRef.update({ likes: firebase.firestore.FieldValue.increment(-1) });
+    return false;
+  }
+  await ref.set({ uid: identity.id, commentId, createdAt: Date.now() });
+  await cmtRef.update({ likes: firebase.firestore.FieldValue.increment(1) });
+  return true;
+}
+function listenComments(parentType, parentId, listElId, countElId, bannerPrefix){
+  if(unsubComments) unsubComments();
+  const listEl = document.getElementById(listElId);
+  listEl.innerHTML = `<div class="empty-state">Memuat komentar...</div>`;
+  unsubComments = fsdb.collection(COL_COMMENTS).where("parentType","==",parentType).where("parentId","==",parentId)
+    .onSnapshot((snapshot) => {
+      const all = snapshot.docs.map(d => d.data());
+      const top = all.filter(c => !c.parentCommentId).sort((a,b) => b.createdAt - a.createdAt);
+      const repliesMap = {};
+      all.filter(c => c.parentCommentId).forEach(c => {
+        if(!repliesMap[c.parentCommentId]) repliesMap[c.parentCommentId] = [];
+        repliesMap[c.parentCommentId].push(c);
+      });
+      document.getElementById(countElId).textContent = all.length + " komentar";
+      if(top.length === 0){ listEl.innerHTML = `<div class="empty-state">Belum ada komentar. Jadilah yang pertama!</div>`; return; }
+      listEl.innerHTML = top.map(c => {
+        const replies = (repliesMap[c.id] || []).sort((a,b) => a.createdAt - b.createdAt);
+        return commentItemHtml(c, false) + replies.map(r => commentItemHtml(r, true)).join("");
+      }).join("");
+      listEl.querySelectorAll(".comment-head").forEach(el => el.addEventListener("click", () => { if(el.dataset.uid) openProfile(el.dataset.uid); }));
+      listEl.querySelectorAll(".reply-btn").forEach(el => el.addEventListener("click", () => {
+        replyingTo = { commentId: el.dataset.replyid, name: el.dataset.replyname };
+        document.getElementById(bannerPrefix + "_replyName").textContent = "@" + el.dataset.replyname;
+        document.getElementById(bannerPrefix + "_replyBanner").style.display = "flex";
+        document.getElementById(bannerPrefix + "_commentInput").focus();
+      }));
+      listEl.querySelectorAll(".comment-like-btn").forEach(el => {
+        const cid = el.dataset.cmtlike;
+        isCommentLiked(cid).then(liked => el.classList.toggle("liked", liked));
+        el.addEventListener("click", async () => {
+          const liked = await toggleCommentLike(cid);
+          if(liked === null) return;
+          el.classList.toggle("liked", liked);
+          const countSpan = el.querySelector("span");
+          countSpan.textContent = Math.max(0, (parseInt(countSpan.textContent) || 0) + (liked ? 1 : -1));
+        });
+      });
+    }, (err) => { console.error(err); listEl.innerHTML = `<div class="empty-state">⚠️ Gagal memuat komentar.</div>`; });
+}
+document.getElementById("d_replyClose").addEventListener("click", () => { replyingTo = null; document.getElementById("d_replyBanner").style.display = "none"; });
+document.getElementById("n_replyClose").addEventListener("click", () => { replyingTo = null; document.getElementById("n_replyBanner").style.display = "none"; });
+
+function createNotification(toUid, type, itemType, itemId){
+  const notif = { id:"notif_"+Date.now()+"_"+Math.random().toString(36).slice(2,8), toUid, type, itemType, itemId, fromUid: identity.id, fromName: identity.name, fromAvatar: identity.avatar, createdAt: Date.now(), read:false };
+  fsdb.collection(COL_NOTIF).doc(notif.id).set(notif).catch(err => console.error(err));
+}
+let unsubBadge = null;
+function listenNotifBadge(){
+  if(unsubBadge) unsubBadge();
+  if(!identity) return;
+  unsubBadge = fsdb.collection(COL_NOTIF).where("toUid","==",identity.id).where("read","==",false)
+    .onSnapshot((snapshot) => {
+      const badge = document.getElementById("notifBadge");
+      if(snapshot.size > 0){ badge.style.display = "flex"; badge.textContent = snapshot.size > 9 ? "9+" : snapshot.size; }
+      else badge.style.display = "none";
+    }, (err) => console.error(err));
+}
+function notifIconSvg(type){
+  if(type === "like") return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20s-7-4.5-9.5-9C0.7 7.5 2 4 5.5 4c2 0 3.3 1 4.5 2.5C11.2 5 12.5 4 14.5 4 18 4 19.3 7.5 17.5 11c-2.5 4.5-9.5 9-9.5 9z" stroke="currentColor" stroke-width="1.8"/></svg>`;
+  if(type === "comment") return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.8"/><line x1="18" y1="8" x2="18" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="15" y1="11" x2="21" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+}
+async function loadNotifications(){
+  const listEl = document.getElementById("notifList");
+  listEl.innerHTML = `<div class="empty-state">Memuat notifikasi...</div>`;
+  try{
+    const snapshot = await fsdb.collection(COL_NOTIF).where("toUid","==",identity.id).get();
+    const notifs = snapshot.docs.map(d => d.data()).sort((a,b) => b.createdAt - a.createdAt).slice(0,50);
+    if(notifs.length === 0){ listEl.innerHTML = `<div class="empty-state">Belum ada notifikasi.</div>`; return; }
+    const LABELS = {
+      like: (n) => `<b>${escapeHtml(n.fromName)}</b> menyukai ${n.itemType === "phone" ? "HP" : "berita"} kamu`,
+      comment: (n) => `<b>${escapeHtml(n.fromName)}</b> berkomentar di ${n.itemType === "phone" ? "HP" : "berita"} kamu`,
+      follow: (n) => `<b>${escapeHtml(n.fromName)}</b> mulai mengikuti kamu`
+    };
+    listEl.innerHTML = notifs.map(n => `
+      <div class="notif-item ${n.read ? '' : 'unread'}" data-type="${n.type}" data-itemtype="${n.itemType||''}" data-itemid="${n.itemId||''}" data-fromuid="${n.fromUid}">
+        <div class="notif-icon">${notifIconSvg(n.type)}</div>
+        <div style="flex:1;"><div class="notif-text">${LABELS[n.type] ? LABELS[n.type](n) : "Notifikasi baru"}</div><div class="notif-time">${formatTimeAgo(n.createdAt)}</div></div>
+      </div>`).join("");
+    listEl.querySelectorAll(".notif-item").forEach(el => {
+      el.addEventListener("click", () => {
+        const type = el.dataset.type;
+        if(type === "follow") openProfile(el.dataset.fromuid);
+        else if(el.dataset.itemtype === "phone") openPhoneDetail(el.dataset.itemid);
+        else if(el.dataset.itemtype === "news") openNewsDetail(el.dataset.itemid);
+      });
+    });
+    const batch = fsdb.batch();
+    snapshot.docs.forEach(d => { if(!d.data().read) batch.update(d.ref, { read:true }); });
+    await batch.commit();
+  }catch(err){ console.error(err); listEl.innerHTML = `<div class="empty-state">⚠️ Gagal memuat notifikasi.</div>`; }
+}
+
+async function isFollowing(targetUid){
+  if(!identity) return false;
+  const doc = await fsdb.collection(COL_FOLLOWS).doc(identity.id + "_" + targetUid).get();
+  return doc.exists;
+}
+async function toggleFollow(targetUid){
+  if(!requireIdentity("mengikuti pengguna")) return;
+  const ref = fsdb.collection(COL_FOLLOWS).doc(identity.id + "_" + targetUid);
+  const doc = await ref.get();
+  const targetRef = fsdb.collection(COL_USERS).doc(targetUid);
+  const selfRef = fsdb.collection(COL_USERS).doc(identity.id);
+  try{
+    if(doc.exists){
+      await ref.delete();
+      await targetRef.update({ followers: firebase.firestore.FieldValue.increment(-1) });
+      await selfRef.update({ following: firebase.firestore.FieldValue.increment(-1) });
+    } else {
+      await ref.set({ followerId: identity.id, followingId: targetUid, createdAt: Date.now() });
+      await targetRef.update({ followers: firebase.firestore.FieldValue.increment(1) });
+      await selfRef.update({ following: firebase.firestore.FieldValue.increment(1) });
+      createNotification(targetUid, "follow", null, null);
+    }
+    openProfile(targetUid);
+  }catch(err){ console.error(err); showToast("Gagal mengikuti, cek koneksi internet"); }
+}
+
+/* ================= Bookmark ================= */
+async function isBookmarked(itemType, itemId){
+  if(!identity) return false;
+  const doc = await fsdb.collection(COL_BOOKMARKS).doc(identity.id + "_" + itemType + "_" + itemId).get();
+  return doc.exists;
+}
+async function toggleBookmark(itemType, itemId){
+  if(!requireIdentity("menyimpan postingan")) return null;
+  const bmId = identity.id + "_" + itemType + "_" + itemId;
+  const ref = fsdb.collection(COL_BOOKMARKS).doc(bmId);
+  const doc = await ref.get();
+  if(doc.exists){ await ref.delete(); return false; }
+  await ref.set({ uid: identity.id, itemType, itemId, createdAt: Date.now() });
+  return true;
+}
+
+function openPhoneDetail(id){
+  const p = allPhonesCache.find(x => x.id === id) || allPhonesCache.find(x => x.id === id);
+  if(!p) return;
+  currentDetailPhone = p;
+  replyingTo = null;
+  document.getElementById("d_replyBanner").style.display = "none";
+  const a = getAuthorInfo(p);
+  const photos = (p.photos && p.photos.length) ? p.photos : [p.photo];
+  currentGalleryIndex = 0;
+  document.getElementById("d_photo").src = photos[0];
+  const thumbsEl = document.getElementById("d_photoThumbs");
+  if(photos.length > 1){
+    thumbsEl.style.display = "flex";
+    thumbsEl.innerHTML = photos.map((src, i) => `<img src="${src}" data-idx="${i}" class="${i===0?'active':''}">`).join("");
+    thumbsEl.querySelectorAll("img").forEach(img => img.addEventListener("click", () => {
+      currentGalleryIndex = parseInt(img.dataset.idx);
+      document.getElementById("d_photo").src = photos[currentGalleryIndex];
+      thumbsEl.querySelectorAll("img").forEach(t => t.classList.toggle("active", t === img));
+    }));
+  } else {
+    thumbsEl.style.display = "none";
+    thumbsEl.innerHTML = "";
+  }
+  const vid = document.getElementById("d_video");
+  if(p.videoUrl){ vid.src = p.videoUrl; vid.style.display = "block"; } else { vid.style.display = "none"; vid.removeAttribute("src"); }
+  document.getElementById("d_brand").textContent = p.brand;
+  document.getElementById("d_name").textContent = p.name;
+  document.getElementById("d_price").textContent = p.price;
+  document.getElementById("d_desc").textContent = p.desc;
+  document.getElementById("d_category").textContent = CATEGORY_LABELS[p.category] || "-";
+  document.getElementById("d_ram").textContent = p.ram || "-";
+  document.getElementById("d_storage").textContent = p.storage || "-";
+  document.getElementById("d_chipset").textContent = p.chipset || "-";
+  document.getElementById("d_camera").textContent = p.camera || "-";
+  document.getElementById("d_battery").textContent = p.battery || "-";
+  document.getElementById("d_screen").textContent = p.screen || "-";
+  document.getElementById("d_os").textContent = p.os || "-";
+  document.getElementById("d_creatorname").textContent = a.name;
+  const av = document.getElementById("d_avatar"), avFb = document.getElementById("d_avatar_fallback");
+  if(a.avatar){ av.src = a.avatar; av.style.display = "block"; avFb.style.display = "none"; } else { av.style.display = "none"; avFb.style.display = "flex"; avFb.innerHTML = personIconSvg(); }
+  document.getElementById("d_authorRow").onclick = () => { if(a.id) openProfile(a.id); };
+  document.getElementById("d_ownerActions").style.display = (identity && a.id === identity.id) ? "flex" : "none";
+  document.getElementById("d_likeCount").textContent = p.likes || 0;
+  isLiked("phone", p.id).then(liked => document.getElementById("d_likeBtn").classList.toggle("liked", liked));
+  isBookmarked("phone", p.id).then(saved => document.getElementById("d_saveBtn").classList.toggle("liked", saved));
+  document.getElementById("d_commentInput").value = "";
+  listenComments("phone", p.id, "d_commentList", "d_commentCount", "d");
+  showView("phone-detail");
+}
+document.getElementById("d_likeBtn").addEventListener("click", async () => {
+  if(!currentDetailPhone) return;
+  const a = getAuthorInfo(currentDetailPhone);
+  const liked = await toggleLike("phone", currentDetailPhone.id, COL_PHONES, a.id);
+  if(liked === null) return;
+  document.getElementById("d_likeBtn").classList.toggle("liked", liked);
+  const countEl = document.getElementById("d_likeCount");
+  countEl.textContent = Math.max(0, (parseInt(countEl.textContent) || 0) + (liked ? 1 : -1));
+});
+document.getElementById("d_shareBtn").addEventListener("click", () => { if(currentDetailPhone) shareItem("phone", currentDetailPhone.id, currentDetailPhone.name); });
+document.getElementById("d_saveBtn").addEventListener("click", async () => {
+  if(!currentDetailPhone) return;
+  const saved = await toggleBookmark("phone", currentDetailPhone.id);
+  if(saved === null) return;
+  document.getElementById("d_saveBtn").classList.toggle("liked", saved);
+  showToast(saved ? "Tersimpan!" : "Dihapus dari simpanan");
+});
+document.getElementById("d_shareImgBtn").addEventListener("click", () => {
+  if(currentDetailPhone) shareAsImage(currentDetailPhone);
+});
+document.getElementById("d_commentSend").addEventListener("click", async () => {
+  const input = document.getElementById("d_commentInput");
+  const text = input.value.trim();
+  if(!text) return;
+  if(!requireIdentity("berkomentar")) return;
+  const a = getAuthorInfo(currentDetailPhone);
+  try{
+    await addComment("phone", currentDetailPhone.id, a.id, text, replyingTo ? replyingTo.commentId : null, replyingTo ? replyingTo.name : null);
+    input.value = "";
+    replyingTo = null;
+    document.getElementById("d_replyBanner").style.display = "none";
+  }catch(err){ console.error(err); showToast("Gagal kirim komentar"); }
+});
+
+function openNewsDetail(id){
+  const n = allNewsCache.find(x => x.id === id);
+  if(!n) return;
+  currentDetailNews = n;
+  replyingTo = null;
+  document.getElementById("n_replyBanner").style.display = "none";
+  const a = getAuthorInfo(n);
+  const photoWrap = document.getElementById("n_detail_photo_wrap");
+  if(n.photo){ document.getElementById("n_detail_photo").src = n.photo; photoWrap.style.display = "block"; } else { photoWrap.style.display = "none"; }
+  const vid = document.getElementById("n_detail_video");
+  if(n.videoUrl){ vid.src = n.videoUrl; vid.style.display = "block"; } else { vid.style.display = "none"; vid.removeAttribute("src"); }
+  document.getElementById("n_detail_title").textContent = n.title;
+  document.getElementById("n_detail_content").textContent = n.content;
+  document.getElementById("n_detail_author").textContent = a.name;
+  document.getElementById("n_detail_time").textContent = formatTimeAgo(n.createdAt);
+  const av = document.getElementById("n_detail_avatar"), avFb = document.getElementById("n_detail_avatar_fallback");
+  if(a.avatar){ av.src = a.avatar; av.style.display = "block"; avFb.style.display = "none"; } else { av.style.display = "none"; avFb.style.display = "flex"; avFb.innerHTML = personIconSvg(); }
+  document.getElementById("n_authorRow").onclick = () => { if(a.id) openProfile(a.id); };
+  document.getElementById("n_ownerActions").style.display = (identity && a.id === identity.id) ? "flex" : "none";
+  document.getElementById("n_likeCount").textContent = n.likes || 0;
+  isLiked("news", n.id).then(liked => document.getElementById("n_likeBtn").classList.toggle("liked", liked));
+  document.getElementById("n_commentInput").value = "";
+  listenComments("news", n.id, "n_commentList", "n_commentCount", "n");
+  showView("news-detail");
+}
+document.getElementById("n_likeBtn").addEventListener("click", async () => {
+  if(!currentDetailNews) return;
+  const a = getAuthorInfo(currentDetailNews);
+  const liked = await toggleLike("news", currentDetailNews.id, COL_NEWS, a.id);
+  if(liked === null) return;
+  document.getElementById("n_likeBtn").classList.toggle("liked", liked);
+  const countEl = document.getElementById("n_likeCount");
+  countEl.textContent = Math.max(0, (parseInt(countEl.textContent) || 0) + (liked ? 1 : -1));
+});
+document.getElementById("n_shareBtn").addEventListener("click", () => { if(currentDetailNews) shareItem("news", currentDetailNews.id, currentDetailNews.title); });
+document.getElementById("n_commentSend").addEventListener("click", async () => {
+  const input = document.getElementById("n_commentInput");
+  const text = input.value.trim();
+  if(!text) return;
+  if(!requireIdentity("berkomentar")) return;
+  const a = getAuthorInfo(currentDetailNews);
+  try{
+    await addComment("news", currentDetailNews.id, a.id, text, replyingTo ? replyingTo.commentId : null, replyingTo ? replyingTo.name : null);
+    input.value = "";
+    replyingTo = null;
+    document.getElementById("n_replyBanner").style.display = "none";
+  }catch(err){ console.error(err); showToast("Gagal kirim komentar"); }
+});
+
+function shareItem(type, id, title){
+  const url = location.origin + location.pathname + "#" + type + "=" + id;
+  if(navigator.share){ navigator.share({ title: "Fiction Phone - " + title, url }).catch(() => {}); }
+  else { navigator.clipboard.writeText(url).then(() => showToast("Link disalin ke clipboard!")).catch(() => showToast(url)); }
+}
+
+/* ================= Share sebagai Gambar ================= */
+function shareAsImage(p){
+  showToast("Membuat gambar...");
+  const canvas = document.createElement("canvas");
+  const W = 800, H = 1000;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#0b0b0b";
+  ctx.fillRect(0, 0, W, H);
+
+  const img = new Image();
+  img.onload = () => {
+    const imgSize = 700;
+    const imgX = (W - imgSize) / 2, imgY = 40;
+    ctx.save();
+    ctx.beginPath();
+    const r = 24;
+    ctx.moveTo(imgX + r, imgY);
+    ctx.arcTo(imgX + imgSize, imgY, imgX + imgSize, imgY + imgSize, r);
+    ctx.arcTo(imgX + imgSize, imgY + imgSize, imgX, imgY + imgSize, r);
+    ctx.arcTo(imgX, imgY + imgSize, imgX, imgY, r);
+    ctx.arcTo(imgX, imgY, imgX + imgSize, imgY, r);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(img, imgX, imgY, imgSize, imgSize);
+    ctx.restore();
+
+    let y = imgY + imgSize + 50;
+    ctx.fillStyle = "#ef1f30";
+    ctx.font = "bold 22px sans-serif";
+    ctx.fillText((p.brand || "").toUpperCase(), 50, y);
+    y += 44;
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 40px sans-serif";
+    ctx.fillText(p.name || "", 50, y);
+    y += 40;
+    ctx.fillStyle = "#98989c";
+    ctx.font = "600 22px sans-serif";
+    ctx.fillText(p.price || "", 50, y);
+    y += 40;
+    ctx.strokeStyle = "#292929";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(50, y); ctx.lineTo(W-50, y); ctx.stroke();
+    y += 34;
+
+    const specs = [
+      ["RAM", p.ram], ["Storage", p.storage], ["Chipset", p.chipset],
+      ["Kamera", p.camera], ["Baterai", p.battery], ["Layar", p.screen]
+    ];
+    ctx.font = "18px sans-serif";
+    specs.forEach(([label, val]) => {
+      if(!val) return;
+      ctx.fillStyle = "#98989c";
+      ctx.fillText(label, 50, y);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 18px sans-serif";
+      ctx.fillText(val, 220, y);
+      ctx.font = "18px sans-serif";
+      y += 32;
+    });
+
+    ctx.fillStyle = "#98989c";
+    ctx.font = "16px sans-serif";
+    ctx.fillText("Fiction Phone · dibuat oleh " + (p.authorName || p.creatorName || "Anonim"), 50, H - 40);
+
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], (p.name || "hp") + ".png", { type: "image/png" });
+      if(navigator.canShare && navigator.canShare({ files: [file] })){
+        try{ await navigator.share({ files: [file], title: p.name }); return; }catch(e){}
+      }
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = (p.name || "fiction-phone") + ".png";
+      link.click();
+      showToast("Gambar tersimpan!");
+    }, "image/png");
+  };
+  img.onerror = () => showToast("Gagal membuat gambar");
+  img.src = p.photo;
+}
+function handleDeepLink(){
+  const hash = pendingHashOpen.replace("#","");
+  pendingHashOpen = "";
+  if(!hash) return;
+  const [type, id] = hash.split("=");
+  if(type === "phone"){ if(allPhonesCache.find(x => x.id === id)) openPhoneDetail(id); }
+  else if(type === "news"){ if(allNewsCache.find(x => x.id === id)) openNewsDetail(id); }
+}
+
+async function openProfile(uid){
+  currentProfileUid = uid;
+  const isSelf = identity && identity.id === uid;
+  const doc = await fsdb.collection(COL_USERS).doc(uid).get();
+  const u = doc.exists ? doc.data() : { name:"Pengguna", bio:"", avatar:null, followers:0, following:0 };
+  document.getElementById("pf_name").textContent = u.name;
+  document.getElementById("pf_bio").textContent = u.bio || "";
+  document.getElementById("pf_followers").textContent = u.followers || 0;
+  document.getElementById("pf_following").textContent = u.following || 0;
+  const av = document.getElementById("pf_avatar"), avFb = document.getElementById("pf_avatar_fallback");
+  if(u.avatar){ av.src = u.avatar; av.style.display = "block"; avFb.style.display = "none"; } else { av.style.display = "none"; avFb.style.display = "flex"; avFb.innerHTML = personIconSvg(); }
+
+  const actionsEl = document.getElementById("pf_actions");
+  if(isSelf){
+    actionsEl.innerHTML = `<button class="btn btn-ghost btn-block" id="pf_editBtn">Edit Profil / Ganti PP</button>`;
+    document.getElementById("pf_editBtn").addEventListener("click", () => openEditProfile(u));
+    document.getElementById("ptab_saved").style.display = "inline-block";
+    document.getElementById("ptab_drafts").style.display = "inline-block";
+  } else if(identity){
+    const following = await isFollowing(uid);
+    actionsEl.innerHTML = `<button class="btn ${following ? 'btn-ghost' : 'btn-primary'} btn-block" id="pf_followBtn">${following ? 'Mengikuti ✓' : '+ Ikuti'}</button>`;
+    document.getElementById("pf_followBtn").addEventListener("click", () => toggleFollow(uid));
+    document.getElementById("ptab_saved").style.display = "none";
+    document.getElementById("ptab_drafts").style.display = "none";
+  } else {
+    actionsEl.innerHTML = `<button class="btn btn-primary btn-block" id="pf_setupBtn">Isi nama untuk mengikuti</button>`;
+    document.getElementById("pf_setupBtn").addEventListener("click", () => showView("setup"));
+    document.getElementById("ptab_saved").style.display = "none";
+    document.getElementById("ptab_drafts").style.display = "none";
+  }
+
+  currentProfileTab = "phones";
+  document.querySelectorAll(".profile-tab").forEach(t => t.classList.toggle("active", t.dataset.ptab === "phones"));
+  loadProfilePosts(uid, "phones");
+  showView("profile");
+}
+document.querySelectorAll(".profile-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    currentProfileTab = tab.dataset.ptab;
+    document.querySelectorAll(".profile-tab").forEach(t => t.classList.toggle("active", t === tab));
+    loadProfilePosts(currentProfileUid, currentProfileTab);
+  });
+});
+async function loadProfilePosts(uid, type){
+  const container = document.getElementById("profileContent");
+  container.innerHTML = `<div class="empty-state">Memuat...</div>`;
+
+  if(type === "drafts"){
+    try{
+      const snapshot = await fsdb.collection(COL_PHONES).where("authorId","==",uid).get();
+      const items = snapshot.docs.map(d => d.data()).filter(p => p.status === "draft").sort((a,b) => b.createdAt - a.createdAt);
+      if(items.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada draft.</div>`; return; }
+      container.innerHTML = `<div class="phone-grid">${items.map(p => `
+        <div class="phone-card" data-phoneid="${p.id}">
+          <div class="phone-photo-wrap">${p.photo ? `<img src="${p.photo}">` : ''}<span class="cat-badge">DRAFT</span></div>
+          <div class="phone-body"><div class="phone-brand">${escapeHtml(p.brand||"")}</div><div class="phone-name">${escapeHtml(p.name||"(Tanpa nama)")}</div></div>
+        </div>`).join("")}</div>`;
+      container.querySelectorAll(".phone-card").forEach(el => el.addEventListener("click", () => {
+        const item = items.find(x => x.id === el.dataset.phoneid);
+        currentDetailPhone = item;
+        document.getElementById("btnEditPhone").click();
+      }));
+    }catch(err){ console.error(err); container.innerHTML = `<div class="empty-state">⚠️ Gagal memuat draft.</div>`; }
+    return;
+  }
+
+  if(type === "saved"){
+    try{
+      const snapshot = await fsdb.collection(COL_BOOKMARKS).where("uid","==",uid).get();
+      const bookmarks = snapshot.docs.map(d => d.data()).sort((a,b) => b.createdAt - a.createdAt);
+      if(bookmarks.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada yang disimpan.</div>`; return; }
+      const phoneBookmarks = bookmarks.filter(b => b.itemType === "phone");
+      const items = [];
+      for(const b of phoneBookmarks){
+        const doc = await fsdb.collection(COL_PHONES).doc(b.itemId).get();
+        if(doc.exists) items.push(doc.data());
+      }
+      if(items.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada yang disimpan.</div>`; return; }
+      container.innerHTML = `<div class="phone-grid">${items.map(p => `
+        <div class="phone-card" data-phoneid="${p.id}">
+          <div class="phone-photo-wrap"><span class="cat-badge">${CATEGORY_LABELS[p.category]||"Entry Level"}</span><img src="${p.photo}"></div>
+          <div class="phone-body"><div class="phone-brand">${escapeHtml(p.brand)}</div><div class="phone-name">${escapeHtml(p.name)}</div><div class="phone-price">${escapeHtml(p.price)}</div></div>
+        </div>`).join("")}</div>`;
+      container.querySelectorAll(".phone-card").forEach(el => el.addEventListener("click", () => {
+        if(!allPhonesCache.find(x=>x.id===el.dataset.phoneid)) allPhonesCache.push(items.find(x=>x.id===el.dataset.phoneid));
+        openPhoneDetail(el.dataset.phoneid);
+      }));
+    }catch(err){ console.error(err); container.innerHTML = `<div class="empty-state">⚠️ Gagal memuat simpanan.</div>`; }
+    return;
+  }
+
+  const colMap = { phones: COL_PHONES, news: COL_NEWS, chipsets: COL_CHIPSETS, displays: COL_DISPLAYS, oses: COL_OSES, lenses: COL_LENSES };
+  try{
+    const snapshot = await fsdb.collection(colMap[type]).where("authorId","==",uid).get();
+    let items = snapshot.docs.map(d => d.data()).sort((a,b) => b.createdAt - a.createdAt);
+    if(type === "phones") items = items.filter(p => p.status !== "draft");
+    if(items.length === 0){ container.innerHTML = `<div class="empty-state">Belum ada postingan.</div>`; return; }
+    if(type === "phones"){
+      container.innerHTML = `<div class="phone-grid">${items.map(p => `
+        <div class="phone-card" data-phoneid="${p.id}">
+          <div class="phone-photo-wrap"><span class="cat-badge">${CATEGORY_LABELS[p.category]||"Entry Level"}</span><img src="${p.photo}"></div>
+          <div class="phone-body"><div class="phone-brand">${escapeHtml(p.brand)}</div><div class="phone-name">${escapeHtml(p.name)}</div><div class="phone-price">${escapeHtml(p.price)}</div></div>
+        </div>`).join("")}</div>`;
+      container.querySelectorAll(".phone-card").forEach(el => el.addEventListener("click", () => {
+        if(!allPhonesCache.find(x=>x.id===el.dataset.phoneid)) allPhonesCache.push(items.find(x=>x.id===el.dataset.phoneid));
+        openPhoneDetail(el.dataset.phoneid);
+      }));
+    } else if(type === "news"){
+      container.innerHTML = `<div class="news-list">${items.map(n => `
+        <div class="news-card" data-newsid="${n.id}">
+          ${n.photo ? `<div class="news-photo"><img src="${n.photo}"></div>` : ``}
+          <div class="news-body"><div class="news-title">${escapeHtml(n.title)}</div><div class="news-content">${escapeHtml(n.content)}</div></div>
+        </div>`).join("")}</div>`;
+      container.querySelectorAll(".news-card").forEach(el => el.addEventListener("click", () => {
+        if(!allNewsCache.find(x=>x.id===el.dataset.newsid)) allNewsCache.push(items.find(x=>x.id===el.dataset.newsid));
+        openNewsDetail(el.dataset.newsid);
+      }));
+    } else if(type === "chipsets"){
+      container.innerHTML = `<div class="chipset-list">${items.map(chipsetCardHtml).join("")}</div>`;
+      container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => {
+        if(!allChipsetsCache.find(x=>x.id===el.dataset.chipsetid)) allChipsetsCache.push(items.find(x=>x.id===el.dataset.chipsetid));
+        openChipsetDetail(el.dataset.chipsetid);
+      }));
+    } else if(type === "displays"){
+      container.innerHTML = `<div class="chipset-list">${items.map(displayCardHtml).join("")}</div>`;
+      container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => {
+        if(!allDisplaysCache.find(x=>x.id===el.dataset.displayid)) allDisplaysCache.push(items.find(x=>x.id===el.dataset.displayid));
+        openDisplayDetail(el.dataset.displayid);
+      }));
+    } else if(type === "oses"){
+      container.innerHTML = `<div class="chipset-list">${items.map(osCardHtml).join("")}</div>`;
+      container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => {
+        if(!allOsesCache.find(x=>x.id===el.dataset.osid)) allOsesCache.push(items.find(x=>x.id===el.dataset.osid));
+        openOsDetail(el.dataset.osid);
+      }));
+    } else {
+      container.innerHTML = `<div class="chipset-list">${items.map(lensCardHtml).join("")}</div>`;
+      container.querySelectorAll(".chipset-card").forEach(el => el.addEventListener("click", () => {
+        if(!allLensesCache.find(x=>x.id===el.dataset.lensid)) allLensesCache.push(items.find(x=>x.id===el.dataset.lensid));
+        openLensDetail(el.dataset.lensid);
+      }));
+    }
+  }catch(err){ console.error(err); container.innerHTML = `<div class="empty-state">⚠️ Gagal memuat.</div>`; }
+}
+
+function openEditProfile(u){
+  editProfileDraft = { avatar: u.avatar || null };
+  document.getElementById("ep_name").value = u.name || "";
+  document.getElementById("ep_bio").value = u.bio || "";
+  const prev = document.getElementById("ep_avatar_preview");
+  if(u.avatar){ prev.src = u.avatar; prev.style.display = "block"; } else { prev.style.display = "none"; }
+  document.getElementById("ep_avatar_text").textContent = "Ganti foto profil";
+  showView("edit-profile");
+}
+document.getElementById("btnSaveProfile").addEventListener("click", async () => {
+  const name = document.getElementById("ep_name").value.trim();
+  const bio = document.getElementById("ep_bio").value.trim();
+  if(!name){ showToast("Nama tidak boleh kosong"); return; }
+  try{
+    showToast("Menyimpan profil...");
+    await fsdb.collection(COL_USERS).doc(identity.id).update({ name, bio, avatar: editProfileDraft.avatar });
+    identity.name = name; identity.avatar = editProfileDraft.avatar;
+    saveIdentity(identity);
+    applyIdentityToHeader();
+    showToast("Profil tersimpan!");
+    openProfile(identity.id);
+  }catch(err){ console.error(err); showToast("Gagal menyimpan profil"); }
+});
+
+function initListeners(){
+  fsdb.collection(COL_PHONES).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allPhonesCache = snapshot.docs.map(doc => doc.data()).filter(p => p.status !== "draft");
+    renderPhoneGrid();
+    if(pendingHashOpen) handleDeepLink();
+  }, (err) => { console.error(err); document.getElementById("homeContent").innerHTML = `<div class="empty-state">⚠️ Gagal memuat data HP.</div>`; });
+
+  fsdb.collection(COL_NEWS).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allNewsCache = snapshot.docs.map(doc => doc.data());
+    renderNewsList(allNewsCache);
+    if(pendingHashOpen) handleDeepLink();
+  }, (err) => { console.error(err); document.getElementById("newsContent").innerHTML = `<div class="empty-state">⚠️ Gagal memuat berita.</div>`; });
+
+  fsdb.collection(COL_CHIPSETS).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allChipsetsCache = snapshot.docs.map(doc => doc.data());
+    renderChipsetListInto("homeChipsetContent", allChipsetsCache);
+    populateChipsetSelect();
+  }, (err) => { console.error(err); document.getElementById("homeChipsetContent").innerHTML = `<div class="empty-state">⚠️ Gagal memuat chipset.</div>`; });
+
+  fsdb.collection(COL_DISPLAYS).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allDisplaysCache = snapshot.docs.map(doc => doc.data());
+    renderDisplayListInto("homeDisplayContent", allDisplaysCache);
+  }, (err) => { console.error(err); document.getElementById("homeDisplayContent").innerHTML = `<div class="empty-state">⚠️ Gagal memuat layar.</div>`; });
+
+  fsdb.collection(COL_OSES).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allOsesCache = snapshot.docs.map(doc => doc.data());
+    renderOsListInto("homeOsContent", allOsesCache);
+  }, (err) => { console.error(err); document.getElementById("homeOsContent").innerHTML = `<div class="empty-state">⚠️ Gagal memuat sistem operasi.</div>`; });
+
+  fsdb.collection(COL_LENSES).orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+    allLensesCache = snapshot.docs.map(doc => doc.data());
+    renderLensListInto("homeLensContent", allLensesCache);
+  }, (err) => { console.error(err); document.getElementById("homeLensContent").innerHTML = `<div class="empty-state">⚠️ Gagal memuat lensa kamera.</div>`; });
+}
+initListeners();
+</script>
+
+</body>
+</html>
